@@ -11,7 +11,7 @@ Docsify(문서화 툴)을 사용해 GitHub Pages에서 바로 쓸 수 있는 블
 
 - `index.html` — Docsify 설정
 - `_sidebar.md` — 전역 사이드바 내비게이션
-- `coverpage.md` — 첫 화면 히어로 영역
+- `_coverpage.md` — 첫 화면 히어로 영역
 - `posts/` — 블로그 글 폴더
 
 ## 최근 글
