@@ -48,9 +48,18 @@ body {
   border-radius: 6px;
 }
 
-.markdown-section pre > code {
+.markdown-section pre {
   background: #0b1024;
   border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 12px 14px;
+  overflow: auto;
+}
+
+.markdown-section pre > code {
+  background: transparent;
+  border: 0;
+  padding: 0;
 }
 
 .cover {
