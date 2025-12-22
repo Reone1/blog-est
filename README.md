@@ -17,11 +17,11 @@ Docsify(문서화 툴)을 사용해 GitHub Pages에서 바로 쓸 수 있는 블
 ## 최근 글
 
 <div class="doc-cards">
-  <a class="doc-card" href="posts/hello-world.md">
+  <a class="doc-card" href="#/posts/hello-world">
     <h3>첫 포스트: 시작하기</h3>
     <p class="meta">Docsify 설치와 글 작성 흐름</p>
   </a>
-  <a class="doc-card" href="posts/theme-notes.md">
+  <a class="doc-card" href="#/posts/theme-notes">
     <h3>테마 커스터마이징</h3>
     <p class="meta">색상·폰트 조정 가이드</p>
   </a>
