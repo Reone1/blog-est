@@ -1,5 +1,5 @@
-- [홈](README.md)
-- [소개](about.md)
-- 글 모음
-  - [첫 포스트: 시작하기](posts/hello-world.md)
-  - [테마 커스터마이징](posts/theme-notes.md)
+- [시장 인사이트](README.md)
+- [소개 및 면책](about.md)
+- 리포트
+  - [시장 오프닝(샘플)](posts/hello-world.md)
+  - [테마/팩터 메모(샘플)](posts/theme-notes.md)
