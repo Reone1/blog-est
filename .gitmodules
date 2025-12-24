@@ -1,0 +1,4 @@
+[submodule "vendor/You-need-to-know-css"]
+	path = vendor/You-need-to-know-css
+	url = https://github.com/l-hammer/You-need-to-know-css.git
+	update = none
