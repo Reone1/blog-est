@@ -1,6 +1,4 @@
-- [시장 인사이트](README.md)
+- [홈](home.md)
 - [소개 및 면책](about.md)
 - 리포트
-  - [시장 오프닝(샘플)](posts/hello-world.md)
-  - [테스트](posts/test-post.md)
-  - [테마/팩터 메모(샘플)](posts/theme-notes.md)
+  - [집단지성과 슈퍼사이클 (2026 주도주)](posts/two-arrows-2026.md)

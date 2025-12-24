@@ -42,6 +42,26 @@
       }
     }
   </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://reone1.github.io/blog-est/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "시장 인사이트",
+          "item": "https://reone1.github.io/blog-est/#/README"
+        }
+      ]
+    }
+  </script>
 </head>
 <body>
   <div id="app">블로그를 불러오는 중...</div>
@@ -51,7 +71,8 @@
       name: '한국 주식시장 분석 블로그',
       repo: '',
       loadSidebar: '_sidebar.md',
-      coverpage: '_coverpage.md',
+      coverpage: false,
+      homepage: 'home.md',
       subMaxLevel: 2,
       auto2top: true,
       search: 'auto',
@@ -64,9 +85,9 @@
     };
   </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-bash.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-bash.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-javascript.min.js" defer></script>
 </body>
 </html>

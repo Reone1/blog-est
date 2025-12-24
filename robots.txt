@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://reone1.github.io/blog-est/sitemap.xml
