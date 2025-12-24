@@ -2,4 +2,5 @@
 - [소개 및 면책](about.md)
 - 리포트
   - [시장 오프닝(샘플)](posts/hello-world.md)
+  - [테스트](posts/test-post.md)
   - [테마/팩터 메모(샘플)](posts/theme-notes.md)
