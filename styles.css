@@ -1,5 +1,5 @@
-/* Base theme import */
-@import "vendor/You-need-to-know-css/assets/index.css";
+/* Base theme import (copied from vendor to root) */
+@import "./yntkc-index.css";
 
 .doc-cards {
   display: grid;
