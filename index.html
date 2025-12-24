@@ -50,13 +50,17 @@
     window.$docsify = {
       name: '한국 주식시장 분석 블로그',
       repo: '',
-      loadSidebar: true,
-      coverpage: true,
+      loadSidebar: '_sidebar.md',
+      coverpage: '_coverpage.md',
       subMaxLevel: 2,
       auto2top: true,
       search: 'auto',
       relativePath: false,
-      themeColor: '#b4a078'
+      themeColor: '#b4a078',
+      alias: {
+        '/.*/_sidebar.md': '/_sidebar.md',
+        '/.*/_coverpage.md': '/_coverpage.md'
+      }
     };
   </script>
 
