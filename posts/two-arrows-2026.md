@@ -1,3 +1,43 @@
+---
+title: "집단지성과 슈퍼사이클: 2026년 주도주를 결정할 두 개의 화살"
+description: "2026년 증시를 관통할 두 가지 핵심 투자 전략 - RISE 동학개미 ETF와 SOL 조선기자재 ETF 분석"
+date: 2025-01-07
+author: "한국 주식시장 분석 블로그"
+category: "투자 전략"
+tags: ["ETF", "동학개미", "조선기자재", "2026전망", "주도주"]
+image: "https://reone1.github.io/blog-est/assets/og-image.png"
+---
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "집단지성과 슈퍼사이클: 2026년 주도주를 결정할 두 개의 화살",
+  "description": "2026년 증시를 관통할 두 가지 핵심 투자 전략 - RISE 동학개미 ETF와 SOL 조선기자재 ETF 분석",
+  "image": "https://reone1.github.io/blog-est/assets/og-image.png",
+  "datePublished": "2025-01-07",
+  "dateModified": "2025-01-07",
+  "author": {
+    "@type": "Person",
+    "name": "한국 주식시장 분석 블로그",
+    "url": "https://reone1.github.io/blog-est/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "한국 주식시장 분석 블로그",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://reone1.github.io/blog-est/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://reone1.github.io/blog-est/#/posts/two-arrows-2026"
+  },
+  "keywords": ["ETF", "동학개미", "조선기자재", "2026전망", "주도주", "한국주식"]
+}
+</script>
+
 # 집단지성과 슈퍼사이클: 2026년 주도주를 결정할 두 개의 화살
 
 ## 서론: 시장의 변곡점에서 마주한 두 가지 시그널
