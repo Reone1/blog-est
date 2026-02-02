@@ -1,0 +1,119 @@
+[
+  {
+    "type": "line_count_exceeded",
+    "file": "/Users/reone/dev/blog-est/tools/stock-researcher/stock_researcher/kr_market.py",
+    "lines": 335,
+    "max": 300,
+    "severity": "error",
+    "timestamp": "2026-02-02T17:06:55.887635"
+  },
+  {
+    "type": "missing_comments",
+    "file": "/Users/reone/dev/blog-est/tools/stock-researcher/stock_researcher/kr_market.py",
+    "functions": [
+      "get_market_summary",
+      "get_top_by_market_cap",
+      "get_top_movers",
+      "get_sector_top"
+    ],
+    "severity": "warning",
+    "timestamp": "2026-02-02T17:06:55.889464"
+  },
+  {
+    "type": "missing_comments",
+    "file": "/Users/reone/dev/blog-est/tools/stock-researcher/stock_researcher/us_market.py",
+    "functions": [
+      "get_market_summary",
+      "get_stock_info",
+      "get_top_by_market_cap",
+      "get_top_movers",
+      "get_sector_top",
+      "search_stocks",
+      "get_multiple_stocks"
+    ],
+    "severity": "warning",
+    "timestamp": "2026-02-02T17:07:45.738293"
+  },
+  {
+    "type": "line_count_exceeded",
+    "file": "/Users/reone/dev/blog-est/tools/stock-researcher/stock_researcher/cli.py",
+    "lines": 398,
+    "max": 300,
+    "severity": "error",
+    "timestamp": "2026-02-02T17:08:39.461526"
+  },
+  {
+    "type": "missing_comments",
+    "file": "/Users/reone/dev/blog-est/tools/stock-researcher/stock_researcher/cli.py",
+    "functions": [
+      "format_number",
+      "format_percent",
+      "format_price",
+      "cmd_top",
+      "cmd_movers",
+      "cmd_sector",
+      "cmd_search",
+      "cmd_summary",
+      "cmd_sectors"
+    ],
+    "severity": "warning",
+    "timestamp": "2026-02-02T17:08:39.462073"
+  },
+  {
+    "type": "line_count_exceeded",
+    "file": "/Users/reone/dev/blog-est/tools/stock-researcher/stock_researcher/mcp_server.py",
+    "lines": 342,
+    "max": 300,
+    "severity": "error",
+    "timestamp": "2026-02-02T17:09:29.580384"
+  },
+  {
+    "type": "missing_comments",
+    "file": "/Users/reone/dev/blog-est/tools/stock-researcher/stock_researcher/mcp_server.py",
+    "functions": [
+      "stock_to_dict"
+    ],
+    "severity": "warning",
+    "timestamp": "2026-02-02T17:09:29.581013"
+  },
+  {
+    "type": "line_count_exceeded",
+    "file": "/Users/reone/dev/blog-est/tools/stock-researcher/stock_researcher/kr_market.py",
+    "lines": 339,
+    "max": 300,
+    "severity": "error",
+    "timestamp": "2026-02-02T17:17:05.804950"
+  },
+  {
+    "type": "missing_comments",
+    "file": "/Users/reone/dev/blog-est/tools/stock-researcher/stock_researcher/kr_market.py",
+    "functions": [
+      "get_market_summary",
+      "get_top_by_market_cap",
+      "get_top_movers",
+      "get_sector_top"
+    ],
+    "severity": "warning",
+    "timestamp": "2026-02-02T17:17:05.805535"
+  },
+  {
+    "type": "line_count_exceeded",
+    "file": "/Users/reone/dev/blog-est/tools/stock-researcher/stock_researcher/kr_market.py",
+    "lines": 337,
+    "max": 300,
+    "severity": "error",
+    "timestamp": "2026-02-02T17:21:16.184232"
+  },
+  {
+    "type": "missing_comments",
+    "file": "/Users/reone/dev/blog-est/tools/stock-researcher/stock_researcher/kr_market.py",
+    "functions": [
+      "get_market_summary",
+      "get_top_by_market_cap",
+      "get_top_movers",
+      "get_sector_top"
+    ],
+    "severity": "warning",
+    "timestamp": "2026-02-02T17:21:16.184844"
+  }
+]
