@@ -229,9 +229,9 @@ class ContentGenerator:
         if additional_context:
             prompt += f"\n\n## 추가 컨텍스트\n{additional_context}"
 
-        # 3. Claude API 호출
+        # 3. Claude API 호출 (10분 분량 = ~5000자 = ~8000 토큰)
         config = GenerationConfig(
-            max_tokens=4000,
+            max_tokens=8000,
             temperature=0.7,
             system_prompt=self._get_system_prompt(),
         )
@@ -265,7 +265,10 @@ class ContentGenerator:
 2. 특정 종목의 매수/매도를 직접 권유하지 않습니다.
 3. 글 말미에 투자 면책조항을 포함합니다.
 4. 마크다운 형식으로 깔끔하게 작성합니다.
-5. 한국어로 작성합니다."""
+5. 한국어로 작성합니다.
+6. 이모지를 절대 사용하지 않습니다. 텍스트만으로 작성합니다.
+7. 충분한 분량(4,000-6,000자)으로 심층 분석합니다.
+8. 각 섹션에 구체적인 데이터와 분석적 서술을 포함합니다."""
 
     def _extract_title(
         self,
@@ -279,15 +282,15 @@ class ContentGenerator:
             if line.startswith("# "):
                 return line[2:].strip()
 
-        # 기본 제목 생성
+        # 기본 제목 생성 (이모지 없음)
         date_str = date.strftime("%Y년 %m월 %d일")
         titles = {
-            ContentType.DAILY_BRIEFING: f"📈 {date_str} 시장 브리핑",
-            ContentType.STD_ANALYSIS: f"📊 {date_str} 표준편차 매매 분석",
-            ContentType.SECTOR_ANALYSIS: f"🔍 섹터 분석 - {date_str}",
-            ContentType.WEEKLY_REVIEW: f"📅 주간 시장 리뷰 ({date_str})",
-            ContentType.MONTHLY_REVIEW: f"📆 월간 시장 리뷰 ({date.strftime('%Y년 %m월')})",
-            ContentType.STOCK_REPORT: f"📋 종목 리포트 - {date_str}",
+            ContentType.DAILY_BRIEFING: f"{date_str} 시장 브리핑",
+            ContentType.STD_ANALYSIS: f"{date_str} 표준편차 매매 분석",
+            ContentType.SECTOR_ANALYSIS: f"섹터 분석 — {date_str}",
+            ContentType.WEEKLY_REVIEW: f"주간 시장 리뷰 ({date_str})",
+            ContentType.MONTHLY_REVIEW: f"월간 시장 리뷰 ({date.strftime('%Y년 %m월')})",
+            ContentType.STOCK_REPORT: f"종목 리포트 — {date_str}",
         }
         return titles.get(content_type, f"시장 분석 - {date_str}")
 
