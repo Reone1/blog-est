@@ -67,9 +67,10 @@ body {
   color: var(--color-text-secondary);
   text-decoration: none;
   transition: color 0.15s ease;
-  white-space: normal;
-  overflow: visible;
-  text-overflow: unset;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .sidebar .sidebar-nav ul li a:hover {
@@ -109,8 +110,10 @@ body {
 }
 
 .sidebar small {
-  color: var(--color-text-tertiary);
+  color: var(--color-accent);
   font-size: 11px;
+  font-weight: 500;
+  opacity: 0.8;
 }
 
 /* ========================================
