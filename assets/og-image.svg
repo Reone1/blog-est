@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2c2416"/>
+      <stop offset="100%" style="stop-color:#4a3c2a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <text x="600" y="240" text-anchor="middle" font-family="sans-serif" font-size="56" font-weight="bold" fill="#b4a078">한국 주식시장 분석 블로그</text>
+  <text x="600" y="310" text-anchor="middle" font-family="sans-serif" font-size="28" fill="#d4c4a8">KOSPI · KOSDAQ 리서치</text>
+  <line x1="400" y1="350" x2="800" y2="350" stroke="#b4a078" stroke-width="2"/>
+  <text x="600" y="400" text-anchor="middle" font-family="sans-serif" font-size="22" fill="#a09080">종목 분석 · 실적 리뷰 · 투자 전략</text>
+  <text x="600" y="560" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#706050">reone1.github.io/blog-est</text>
+</svg>

@@ -338,7 +338,12 @@ class ContentGenerator:
         output_dir.mkdir(parents=True, exist_ok=True)
         output_path = output_dir / post.filename
 
-        # 프론트매터 추가
+        # 파일명에서 slug 추출 (.md 제거)
+        slug = post.filename.replace(".md", "")
+        post_url = f"https://reone1.github.io/blog-est/#/posts/{slug}"
+        date_str = post.date.strftime("%Y-%m-%d")
+
+        # 프론트매터 + JSON-LD Schema 추가
         frontmatter = f"""---
 title: "{post.title}"
 date: {post.date.isoformat()}
@@ -346,6 +351,34 @@ tags: {post.tags}
 summary: "{post.summary}"
 type: {post.content_type.value}
 ---
+
+<script type="application/ld+json">
+{{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{post.title}",
+  "description": "{post.summary}",
+  "datePublished": "{date_str}",
+  "dateModified": "{date_str}",
+  "author": {{
+    "@type": "Organization",
+    "name": "한국 주식시장 분석 블로그"
+  }},
+  "publisher": {{
+    "@type": "Organization",
+    "name": "한국 주식시장 분석 블로그",
+    "logo": {{
+      "@type": "ImageObject",
+      "url": "https://reone1.github.io/blog-est/assets/logo.svg"
+    }}
+  }},
+  "mainEntityOfPage": {{
+    "@type": "WebPage",
+    "@id": "{post_url}"
+  }},
+  "image": "https://reone1.github.io/blog-est/assets/og-image.svg"
+}}
+</script>
 
 """
         full_content = frontmatter + post.content

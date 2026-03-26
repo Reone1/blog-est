@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
+  <rect width="500" height="500" rx="60" fill="#2c2416"/>
+  <text x="250" y="200" text-anchor="middle" font-family="sans-serif" font-size="120" font-weight="bold" fill="#b4a078">📈</text>
+  <text x="250" y="310" text-anchor="middle" font-family="sans-serif" font-size="42" font-weight="bold" fill="#d4c4a8">주식시장</text>
+  <text x="250" y="370" text-anchor="middle" font-family="sans-serif" font-size="32" fill="#a09080">분석 블로그</text>
+</svg>
