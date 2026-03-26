@@ -79,19 +79,29 @@ def get_posts(posts_dir: Path, limit: int = 15) -> list[dict]:
 
 
 def generate_sidebar(posts: list[dict], base_path: Path) -> str:
-    """_sidebar.md 콘텐츠 생성"""
+    """_sidebar.md 콘텐츠 생성 (Medium 스타일 — 이모지 제거, 심플)"""
 
-    # 유형별 이모지
-    type_emoji = {
-        "daily_briefing": "📈",
-        "std_analysis": "📊",
-        "sector_analysis": "🔍",
-        "weekly_review": "📅",
-        "monthly_review": "📆",
-        "stock_report": "📋",
-    }
+    sidebar = """* [홈](home.md)
+* [소개](about.md)
 
-    # 유형별 한글 이름
+## 최근 글
+
+"""
+
+    for post in posts:
+        date_str = post["date"].strftime("%m/%d") if post["date"] != datetime.min else ""
+        title = post["title"]
+
+        # 제목이 너무 길면 자르기
+        if len(title) > 50:
+            title = title[:47] + "..."
+
+        sidebar += f"* [{title}](posts/{post['filename']})"
+        if date_str:
+            sidebar += f" <small>({date_str})</small>"
+        sidebar += "\n"
+
+    # 포스트 5개 이상일 때만 카테고리 섹션 표시
     type_name = {
         "daily_briefing": "데일리 브리핑",
         "std_analysis": "표준편차 분석",
@@ -101,45 +111,19 @@ def generate_sidebar(posts: list[dict], base_path: Path) -> str:
         "stock_report": "종목 리포트",
     }
 
-    sidebar = """# 한국 주식시장 분석
-
-* [🏠 홈](home.md)
-* [ℹ️ 소개](about.md)
-
-## 📰 최근 글
-
-"""
-
-    for post in posts:
-        emoji = type_emoji.get(post["type"], "📝")
-        date_str = post["date"].strftime("%m/%d") if post["date"] != datetime.min else ""
-        title = post["title"]
-
-        # 제목이 너무 길면 자르기
-        if len(title) > 40:
-            title = title[:37] + "..."
-
-        sidebar += f"* [{emoji} {title}](posts/{post['filename']})"
-        if date_str:
-            sidebar += f" <small>({date_str})</small>"
-        sidebar += "\n"
-
-    # 유형별 카테고리 (실제 포스트가 있는 유형만 표시)
-    existing_types = {p["type"] for p in posts if p["type"]}
-    if existing_types:
-        sidebar += "\n## 📚 카테고리\n\n"
-        for type_key, name in type_name.items():
-            type_posts = [p for p in posts if p["type"] == type_key]
-            if type_posts:
-                emoji = type_emoji.get(type_key, "📝")
-                count = len(type_posts)
-                # 해당 유형의 최신 포스트로 링크
-                latest = type_posts[0]
-                sidebar += f"* {emoji} **{name}** ({count}건)"
-                sidebar += f" — [{latest['title'][:25]}...](posts/{latest['filename']})\n" if len(latest['title']) > 25 else f" — [{latest['title']}](posts/{latest['filename']})\n"
+    if len(posts) >= 5:
+        existing_types = {p["type"] for p in posts if p["type"]}
+        if existing_types:
+            sidebar += "\n## 카테고리\n\n"
+            for type_key, name in type_name.items():
+                type_posts = [p for p in posts if p["type"] == type_key]
+                if type_posts:
+                    count = len(type_posts)
+                    latest = type_posts[0]
+                    sidebar += f"* [{name} ({count})](posts/{latest['filename']})\n"
 
     sidebar += """
-## 🔗 링크
+## 링크
 
 * [GitHub](https://github.com/Reone1/blog-est)
 """

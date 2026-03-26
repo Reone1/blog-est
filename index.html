@@ -23,6 +23,9 @@
   <meta name="twitter:image" content="https://reone1.github.io/blog-est/assets/og-image.svg" />
   <meta name="theme-color" content="#b4a078" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="yntkc-vue.css" />
   <link rel="stylesheet" href="styles.css" />
   <script type="application/ld+json">
@@ -58,7 +61,7 @@
           "@type": "ListItem",
           "position": 2,
           "name": "시장 인사이트",
-          "item": "https://reone1.github.io/blog-est/#/README"
+          "item": "https://reone1.github.io/blog-est/#/home"
         }
       ]
     }
@@ -69,12 +72,12 @@
 
   <script>
     window.$docsify = {
-      name: '한국 주식시장 분석 블로그',
+      name: '한국 주식시장 분석',
       repo: '',
       loadSidebar: '_sidebar.md',
       coverpage: false,
       homepage: 'home.md',
-      subMaxLevel: 2,
+      subMaxLevel: 3,
       auto2top: true,
       search: 'auto',
       relativePath: false,
@@ -83,10 +86,55 @@
         '/.*/_sidebar.md': '/_sidebar.md'
       },
       plugins: [
-        function(hook) {
+        function(hook, vm) {
           hook.beforeEach(function(content) {
-            // YAML front matter 제거 (--- ... --- 블록)
-            return content.replace(/^---[\s\S]*?---\s*\n/, '');
+            // 1. YAML front matter 추출 및 제거
+            var meta = {};
+            content = content.replace(/^---\n([\s\S]*?)\n---\s*\n/, function(match, fm) {
+              fm.split('\n').forEach(function(line) {
+                var idx = line.indexOf(':');
+                if (idx > 0) {
+                  var key = line.substring(0, idx).trim();
+                  var value = line.substring(idx + 1).trim().replace(/^["']|["']$/g, '');
+                  meta[key] = value;
+                }
+              });
+              return '';
+            });
+
+            // 2. 포스트 페이지에만 메타 정보 삽입
+            var isArticle = meta.date || meta.type;
+            if (isArticle) {
+              // 읽기 시간 계산 (한국어: ~500자/분)
+              var textLen = content.replace(/<[^>]*>/g, '').replace(/[#*\[\]()]/g, '').length;
+              var readingTime = Math.max(1, Math.ceil(textLen / 500));
+
+              // 날짜 포맷
+              var dateDisplay = (meta.date || '').split('T')[0].replace(/-/g, '.');
+
+              // 카테고리 매핑
+              var typeMap = {
+                'daily_briefing': '데일리 브리핑',
+                'std_analysis': '표준편차 분석',
+                'sector_analysis': '섹터 분석',
+                'weekly_review': '주간 리뷰',
+                'monthly_review': '월간 리뷰',
+                'stock_report': '종목 리포트'
+              };
+              var category = typeMap[meta.type] || meta.category || '';
+
+              // H1 뒤에 메타 블록 삽입
+              var metaHtml = '\n<div class="article-meta">' +
+                (dateDisplay ? '<span class="meta-item">' + dateDisplay + '</span>' : '') +
+                (dateDisplay ? '<span class="meta-separator">·</span>' : '') +
+                '<span class="meta-item">' + readingTime + '분 읽기</span>' +
+                (category ? '<span class="meta-separator">·</span><span class="meta-item">' + category + '</span>' : '') +
+                '</div>\n\n';
+
+              content = content.replace(/^(# .+\n)/m, '$1' + metaHtml);
+            }
+
+            return content;
           });
         }
       ]
