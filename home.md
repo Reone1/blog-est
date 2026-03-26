@@ -1,19 +1,19 @@
 # 한국 주식시장 분석 블로그
 
-<p class="home-subtitle">코스피·코스닥 리서치 노트를 차곡차곡 쌓아갑니다. 데이터 기반 리포트와 간결한 인사이트로 투자 판단에 도움을 드립니다.</p>
+<p class="home-subtitle">데이터와 논리로 시장을 읽습니다. 매일의 시황부터 섹터 심층 분석, 표준편차 기반 매매 시그널까지 — 투자 판단에 필요한 리서치 노트를 쌓아갑니다.</p>
 
 ---
 
-## 최근 글
+## 주요 리포트
 
 <div class="doc-cards">
   <a class="doc-card" href="#/posts/2026-03-26-daily-briefing">
-    <h3>대형주 급락에 코스피 3.22% 폭락... 한화솔루션 18% 급락 주도</h3>
-    <p class="meta">오늘 한국 증시는 대형주 중심의 급락세로 코스피가 3.22% 폭락하며 5,460선에서 마감했습니다. 상승 종목 대비 하락 종목이 2배 가까이 많아 전반적인 약세 장세가 뚜렷했습니다.</p>
+    <h3>삼성전자, 52주 신저가 코앞 — 외국인 6일 연속 매도의 끝은 어디인가</h3>
+    <p class="meta">코스피가 외국인 대규모 순매도에 2,580선이 붕괴되며 전일 대비 2.14% 하락 마감했다. 120일 이동평균선 지지 여부가 다음 주 방향성을 결정할 핵심 변수로 부상했다.</p>
     <div class="card-footer">
       <span>2026.03.26</span>
       <span class="meta-separator">·</span>
-      <span>3분 읽기</span>
+      <span>11분 읽기</span>
       <span class="meta-separator">·</span>
       <span class="card-tag">데일리 브리핑</span>
     </div>
