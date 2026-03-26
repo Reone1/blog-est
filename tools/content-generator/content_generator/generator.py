@@ -12,9 +12,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Optional
 
-from jinja2 import Environment, FileSystemLoader
-
-# stock-researcher 경로 추가
+# stock-researcher 경로 추가 (로컬 개발용, CI에서는 pip install -e로 설치됨)
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "stock-researcher"))
 
 from .claude_client import ClaudeClient, GenerationConfig
@@ -49,25 +47,16 @@ class ContentGenerator:
         self,
         api_key: Optional[str] = None,
         prompts_dir: Optional[Path] = None,
-        templates_dir: Optional[Path] = None,
     ):
         """
         Args:
             api_key: Anthropic API 키
             prompts_dir: 프롬프트 템플릿 디렉토리
-            templates_dir: 마크다운 템플릿 디렉토리
         """
         self.claude = ClaudeClient(api_key=api_key)
 
         base_dir = Path(__file__).parent
         self.prompts_dir = prompts_dir or base_dir / "prompts"
-        self.templates_dir = templates_dir or base_dir / "templates"
-
-        # Jinja2 환경 설정
-        self.jinja_env = Environment(
-            loader=FileSystemLoader(str(self.templates_dir)),
-            autoescape=False,
-        )
 
     def _load_prompt(self, content_type: ContentType) -> str:
         """프롬프트 템플릿 로드"""

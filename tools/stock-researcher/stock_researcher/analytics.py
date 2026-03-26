@@ -1,5 +1,5 @@
 """
-변동성 분석 모듈
+변동성 분석 모듈 (FinanceDataReader + Naver Finance API 기반)
 
 기능:
 - 표준편차 기반 변동성 분석
@@ -8,12 +8,11 @@
 - 시장 심리 지표 (Market Breadth)
 """
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Optional
 
 import numpy as np
 import pandas as pd
-from pykrx import stock as krx
 
 from .models import (
     Market,
@@ -24,49 +23,47 @@ from .models import (
 )
 
 
-def get_trading_dates(days: int = 60) -> list[str]:
-    """
-    최근 N 거래일 목록 반환 (YYYYMMDD 형식)
-    """
-    today = datetime.now()
-    dates = []
-
-    for i in range(days * 2):  # 주말/공휴일 고려해서 2배로
-        check_date = today - timedelta(days=i)
-        date_str = check_date.strftime("%Y%m%d")
-
-        try:
-            df = krx.get_market_ohlcv(date_str, market="KOSPI")
-            if not df.empty:
-                dates.append(date_str)
-                if len(dates) >= days:
-                    break
-        except Exception:
-            continue
-
-    return dates
-
-
 def get_stock_history(ticker: str, days: int = 60) -> pd.DataFrame:
     """
-    종목의 과거 가격 데이터 조회
+    종목의 과거 가격 데이터 조회 (FinanceDataReader 사용)
 
     Args:
         ticker: 종목코드
         days: 조회 기간 (거래일 기준)
 
     Returns:
-        DataFrame with columns: 시가, 고가, 저가, 종가, 거래량
+        DataFrame with columns: Open, High, Low, Close, Volume
     """
+    import FinanceDataReader as fdr
+
     today = datetime.now()
-    start_date = (today - timedelta(days=days * 2)).strftime("%Y%m%d")
-    end_date = today.strftime("%Y%m%d")
+    # 여유 있게 조회 (주말/공휴일 고려)
+    start_date = (today - timedelta(days=days * 2)).strftime("%Y-%m-%d")
+    end_date = today.strftime("%Y-%m-%d")
 
     try:
-        df = krx.get_market_ohlcv(start_date, end_date, ticker)
+        df = fdr.DataReader(ticker, start_date, end_date)
         return df.tail(days) if len(df) > days else df
     except Exception:
         return pd.DataFrame()
+
+
+def _get_stock_name(ticker: str) -> str:
+    """Naver API로 종목명 조회"""
+    import requests
+
+    try:
+        session = requests.Session()
+        session.headers.update({"User-Agent": "Mozilla/5.0"})
+        r = session.get(
+            f"https://m.stock.naver.com/api/stock/{ticker}/basic",
+            timeout=5,
+        )
+        if r.status_code == 200:
+            return r.json().get("stockName", ticker)
+    except Exception:
+        pass
+    return ticker
 
 
 def calculate_volatility(ticker: str, name: str = "") -> Optional[VolatilityData]:
@@ -80,7 +77,7 @@ def calculate_volatility(ticker: str, name: str = "") -> Optional[VolatilityData
     Returns:
         VolatilityData 또는 None (데이터 부족 시)
     """
-    # 60일 데이터 조회 (20일 MA 계산용 + 여유분)
+    # 70일 데이터 조회 (20/60일 MA 계산용)
     df = get_stock_history(ticker, days=70)
 
     if len(df) < 20:
@@ -88,22 +85,27 @@ def calculate_volatility(ticker: str, name: str = "") -> Optional[VolatilityData
 
     # 종목명 조회
     if not name:
-        try:
-            name = krx.get_market_ticker_name(ticker)
-        except Exception:
-            name = ticker
+        name = _get_stock_name(ticker)
 
     # 종가 시리즈
-    close = df["종가"]
+    close = df["Close"]
     current_price = float(close.iloc[-1])
 
     # 이동평균 계산
     ma_20 = float(close.rolling(window=20).mean().iloc[-1])
-    ma_60 = float(close.rolling(window=60).mean().iloc[-1]) if len(close) >= 60 else ma_20
+    ma_60 = (
+        float(close.rolling(window=60).mean().iloc[-1])
+        if len(close) >= 60
+        else ma_20
+    )
 
     # 표준편차 계산
     std_20d = float(close.rolling(window=20).std().iloc[-1])
-    std_60d = float(close.rolling(window=60).std().iloc[-1]) if len(close) >= 60 else std_20d
+    std_60d = (
+        float(close.rolling(window=60).std().iloc[-1])
+        if len(close) >= 60
+        else std_20d
+    )
 
     # 볼린저 밴드
     bb_upper = ma_20 + (2 * std_20d)
@@ -116,10 +118,7 @@ def calculate_volatility(ticker: str, name: str = "") -> Optional[VolatilityData
         bb_position = 0.5
 
     # Z-score
-    if std_20d > 0:
-        zscore = (current_price - ma_20) / std_20d
-    else:
-        zscore = 0.0
+    zscore = (current_price - ma_20) / std_20d if std_20d > 0 else 0.0
 
     # 시그널 판단
     if zscore <= -2:
@@ -173,35 +172,27 @@ def get_std_signals(
     Returns:
         StdSignal 리스트 (과매도 → 과매수 순)
     """
-    today = datetime.now()
-    date_str = today.strftime("%Y%m%d")
+    from .kr_market import get_top_by_market_cap
 
-    # 최근 거래일 찾기
-    for i in range(10):
-        check_date = (today - timedelta(days=i)).strftime("%Y%m%d")
-        try:
-            cap_df = krx.get_market_cap(check_date, market=market_type)
-            if not cap_df.empty:
-                date_str = check_date
-                break
-        except Exception:
-            continue
+    # 시총 상위 종목 조회 (Naver API)
+    top_stocks = get_top_by_market_cap(market_type, limit=50)
 
     # 시가총액 필터링
-    cap_df = krx.get_market_cap(date_str, market=market_type)
-    filtered_tickers = cap_df[cap_df["시가총액"] >= min_market_cap].index.tolist()
+    filtered = [
+        s for s in top_stocks
+        if (s.market_cap or 0) >= min_market_cap
+    ]
 
-    signals = []
     oversold = []
     overbought = []
 
-    for ticker in filtered_tickers[:100]:  # 상위 100개만 스캔 (성능)
-        vol_data = calculate_volatility(ticker)
+    for stock in filtered:
+        vol_data = calculate_volatility(stock.symbol, stock.name)
         if vol_data is None:
             continue
 
         if vol_data.signal == VolatilitySignal.OVERSOLD:
-            strength = min(abs(vol_data.zscore) / 3, 1.0)  # Z-score -3 이상이면 강도 1
+            strength = min(abs(vol_data.zscore) / 3, 1.0)
             oversold.append(StdSignal(
                 stock=vol_data,
                 signal_type="buy",
@@ -222,6 +213,7 @@ def get_std_signals(
     overbought.sort(key=lambda x: x.signal_strength, reverse=True)
 
     # 과매도(매수) 시그널 먼저, 그 다음 과매수(매도) 시그널
+    signals = []
     signals.extend(oversold[:limit])
     signals.extend(overbought[:limit])
 
@@ -238,27 +230,16 @@ def get_market_breadth(market_type: str = "KOSPI") -> Optional[MarketBreadth]:
     Returns:
         MarketBreadth 또는 None
     """
-    today = datetime.now()
-    date_str = today.strftime("%Y%m%d")
+    from .kr_market import get_market_summary, get_top_by_market_cap
 
-    # 최근 거래일 찾기
-    for i in range(10):
-        check_date = (today - timedelta(days=i)).strftime("%Y%m%d")
-        try:
-            ohlcv_df = krx.get_market_ohlcv(check_date, market=market_type)
-            if not ohlcv_df.empty:
-                date_str = check_date
-                break
-        except Exception:
-            continue
-    else:
+    # 시장 요약에서 상승/하락 종목 수 가져오기
+    try:
+        summary = get_market_summary(market_type)
+    except Exception:
         return None
 
-    ohlcv_df = krx.get_market_ohlcv(date_str, market=market_type)
-
-    # 등락 종목 수
-    advance_count = len(ohlcv_df[ohlcv_df["등락률"] > 0])
-    decline_count = len(ohlcv_df[ohlcv_df["등락률"] < 0])
+    advance_count = summary.advancing
+    decline_count = summary.declining
 
     # 등락 비율
     if decline_count > 0:
@@ -266,40 +247,31 @@ def get_market_breadth(market_type: str = "KOSPI") -> Optional[MarketBreadth]:
     else:
         advance_decline_ratio = float("inf") if advance_count > 0 else 1.0
 
-    # 52주 신고가/신저가 (간이 계산: 최근 데이터만)
-    # 정확한 52주 데이터는 추가 조회 필요
-    new_highs_52w = 0
-    new_lows_52w = 0
-
-    # 거래량 브레스
-    total_volume = ohlcv_df["거래량"].sum()
-    advancing_volume = ohlcv_df[ohlcv_df["등락률"] > 0]["거래량"].sum()
-    volume_breadth = advancing_volume / total_volume if total_volume > 0 else 0.5
-
-    # 변동성 분포 (시가총액 상위 50개)
-    cap_df = krx.get_market_cap(date_str, market=market_type)
-    top_tickers = cap_df.sort_values("시가총액", ascending=False).head(50).index.tolist()
-
+    # 변동성 분포 (시가총액 상위 30개로 축소 - 성능)
     oversold_count = 0
     overbought_count = 0
 
-    for ticker in top_tickers:
-        vol_data = calculate_volatility(ticker)
-        if vol_data:
-            if vol_data.signal == VolatilitySignal.OVERSOLD:
-                oversold_count += 1
-            elif vol_data.signal == VolatilitySignal.OVERBOUGHT:
-                overbought_count += 1
+    try:
+        top_stocks = get_top_by_market_cap(market_type, limit=30)
+        for stock in top_stocks:
+            vol_data = calculate_volatility(stock.symbol, stock.name)
+            if vol_data:
+                if vol_data.signal == VolatilitySignal.OVERSOLD:
+                    oversold_count += 1
+                elif vol_data.signal == VolatilitySignal.OVERBOUGHT:
+                    overbought_count += 1
+    except Exception:
+        pass
 
     return MarketBreadth(
         market=Market.KR,
-        date=datetime.strptime(date_str, "%Y%m%d").date(),
+        date=date.today(),
         advance_count=advance_count,
         decline_count=decline_count,
         advance_decline_ratio=advance_decline_ratio,
-        new_highs_52w=new_highs_52w,
-        new_lows_52w=new_lows_52w,
-        volume_breadth=volume_breadth,
+        new_highs_52w=0,
+        new_lows_52w=0,
+        volume_breadth=0.5,
         oversold_count=oversold_count,
         overbought_count=overbought_count,
     )
@@ -307,7 +279,7 @@ def get_market_breadth(market_type: str = "KOSPI") -> Optional[MarketBreadth]:
 
 def get_volatility_ranking(
     market_type: str = "KOSPI",
-    sort_by: str = "zscore",  # "zscore" | "std_20d" | "bb_position"
+    sort_by: str = "zscore",
     ascending: bool = True,
     limit: int = 20,
 ) -> list[VolatilityData]:
@@ -316,34 +288,21 @@ def get_volatility_ranking(
 
     Args:
         market_type: "KOSPI" 또는 "KOSDAQ"
-        sort_by: 정렬 기준
+        sort_by: 정렬 기준 ("zscore" | "std_20d" | "bb_position")
         ascending: 오름차순 여부
         limit: 조회 개수
 
     Returns:
         VolatilityData 리스트
     """
-    today = datetime.now()
-    date_str = today.strftime("%Y%m%d")
+    from .kr_market import get_top_by_market_cap
 
-    # 최근 거래일 찾기
-    for i in range(10):
-        check_date = (today - timedelta(days=i)).strftime("%Y%m%d")
-        try:
-            cap_df = krx.get_market_cap(check_date, market=market_type)
-            if not cap_df.empty:
-                date_str = check_date
-                break
-        except Exception:
-            continue
-
-    # 시가총액 상위 100개
-    cap_df = krx.get_market_cap(date_str, market=market_type)
-    top_tickers = cap_df.sort_values("시가총액", ascending=False).head(100).index.tolist()
+    # 시총 상위 종목
+    top_stocks = get_top_by_market_cap(market_type, limit=50)
 
     results = []
-    for ticker in top_tickers:
-        vol_data = calculate_volatility(ticker)
+    for stock in top_stocks:
+        vol_data = calculate_volatility(stock.symbol, stock.name)
         if vol_data:
             results.append(vol_data)
 

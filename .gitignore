@@ -1,1 +1,8 @@
 vendor/*
+__pycache__/
+*.pyc
+*.egg-info/
+.claude/worktrees/
+.claude-state/
+*.lock
+.env

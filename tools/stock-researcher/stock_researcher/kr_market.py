@@ -1,59 +1,87 @@
 """
-한국 증시 조회 모듈 (pykrx 기반)
+한국 증시 조회 모듈 (Naver Finance API + FinanceDataReader 기반)
 
 기능:
-- KOSPI/KOSDAQ 시가총액 TOP 10
+- KOSPI/KOSDAQ 시장 요약 (지수, 등락률, 상승/하락 종목 수)
+- 시가총액 상위 종목
+- 급등주/급락주/거래량 상위 종목
 - 섹터별 상위 종목
-- 급등주/거래량 급증 종목
+- 종목 검색
 """
 
+import re
 from datetime import date, datetime, timedelta
 from typing import Optional
 
-import pandas as pd
-from pykrx import stock as krx
+import requests
 
 from .models import Market, MarketSummary, StockInfo, TopMovers
 
 
-# 한국 섹터 매핑 (업종명 → 표준 섹터)
-KR_SECTOR_MAP = {
-    "반도체": "semiconductor",
-    "IT부품": "technology",
-    "소프트웨어": "technology",
-    "통신장비": "communication",
-    "디스플레이": "technology",
-    "제약": "bio",
-    "바이오": "bio",
-    "의료정밀": "healthcare",
-    "화학": "materials",
-    "철강": "materials",
-    "비철금속": "materials",
-    "기계": "industrials",
-    "조선": "industrials",
-    "자동차": "consumer_cyclical",
-    "운수장비": "industrials",
-    "전기전자": "technology",
-    "유통업": "consumer_cyclical",
-    "건설업": "industrials",
-    "금융업": "financials",
-    "은행": "financials",
-    "증권": "financials",
-    "보험": "financials",
-    "음식료품": "consumer_defensive",
-    "섬유의복": "consumer_cyclical",
-    "종이목재": "materials",
-    "전기가스업": "utilities",
-    "서비스업": "communication",
+# Naver Finance API 기본 URL
+NAVER_API_BASE = "https://m.stock.naver.com/api"
+
+# 시장 코드 매핑
+MARKET_CODE_MAP = {
+    "KOSPI": "KOSPI",
+    "KOSDAQ": "KOSDAQ",
+}
+
+# 지수 코드 매핑 (FinanceDataReader용)
+INDEX_CODE_MAP = {
+    "KOSPI": "KS11",
+    "KOSDAQ": "KQ11",
 }
 
 # 테마 ETF 티커 (섹터 대용)
 THEME_ETFS = {
-    "semiconductor": ["091160", "091170", "395170"],  # KODEX 반도체
-    "battery": ["305720", "373540"],                   # KODEX 2차전지
-    "bio": ["244580", "261110"],                       # KODEX 바이오
-    "ai": ["463050", "466920"],                        # AI 관련 ETF
+    "semiconductor": ["091160", "091170", "395170"],
+    "battery": ["305720", "373540"],
+    "bio": ["244580", "261110"],
+    "ai": ["463050", "466920"],
 }
+
+
+def _naver_session() -> requests.Session:
+    """Naver Finance API용 세션 생성"""
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": (
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/120.0.0.0 Safari/537.36"
+        ),
+        "Referer": "https://m.stock.naver.com/",
+    })
+    return session
+
+
+def _parse_naver_number(value: str) -> float:
+    """Naver API의 숫자 문자열을 float으로 변환 (쉼표 제거)"""
+    if not value or value == "N/A":
+        return 0.0
+    return float(str(value).replace(",", ""))
+
+
+def _parse_naver_int(value: str) -> int:
+    """Naver API의 숫자 문자열을 int으로 변환"""
+    if not value or value == "N/A":
+        return 0
+    return int(str(value).replace(",", ""))
+
+
+def _naver_stock_to_stock_info(item: dict, market: Market = Market.KR) -> StockInfo:
+    """Naver API 종목 데이터를 StockInfo로 변환"""
+    return StockInfo(
+        symbol=item.get("itemCode", ""),
+        name=item.get("stockName", ""),
+        market=market,
+        price=_parse_naver_number(item.get("closePrice", "0")),
+        change_percent=float(item.get("fluctuationsRatio", 0)),
+        volume=_parse_naver_int(item.get("accumulatedTradingVolume", "0")),
+        market_cap=_parse_naver_number(item.get("marketValue", "0")) * 1_0000_0000,
+        fetched_at=date.today(),
+    )
 
 
 def get_trading_date(offset: int = 0) -> str:
@@ -65,22 +93,18 @@ def get_trading_date(offset: int = 0) -> str:
     """
     today = datetime.now()
 
-    # 최근 10일 내에서 거래일 찾기
-    for i in range(10):
+    # 주말 건너뛰기
+    skip_count = 0
+    for i in range(30):
         check_date = today - timedelta(days=i)
-        date_str = check_date.strftime("%Y%m%d")
-
-        try:
-            # KOSPI 데이터가 있으면 거래일
-            df = krx.get_market_ohlcv(date_str, market="KOSPI")
-            if not df.empty:
-                if offset == 0:
-                    return date_str
-                offset += 1
-        except Exception:
+        # 주말 제외
+        if check_date.weekday() >= 5:
             continue
 
-    # 못 찾으면 오늘 날짜 반환
+        if skip_count == abs(offset):
+            return check_date.strftime("%Y%m%d")
+        skip_count += 1
+
     return today.strftime("%Y%m%d")
 
 
@@ -91,38 +115,66 @@ def get_market_summary(market_type: str = "KOSPI") -> MarketSummary:
     Args:
         market_type: "KOSPI" 또는 "KOSDAQ"
     """
-    date_str = get_trading_date()
+    session = _naver_session()
+    market_code = MARKET_CODE_MAP.get(market_type, market_type)
 
-    # OHLCV 데이터 조회
-    df = krx.get_market_ohlcv(date_str, market=market_type)
+    # 1. 지수 데이터 조회
+    index_data = {}
+    try:
+        r = session.get(
+            f"{NAVER_API_BASE}/index/{market_code}/basic",
+            timeout=10,
+        )
+        if r.status_code == 200:
+            index_data = r.json()
+    except Exception:
+        pass
 
-    # 등락 통계
-    advancing = len(df[df["등락률"] > 0])
-    declining = len(df[df["등락률"] < 0])
-    unchanged = len(df[df["등락률"] == 0])
+    # 2. 상승/하락 종목 수 조회
+    advancing = 0
+    declining = 0
+    for direction, attr in [("up", "advancing"), ("down", "declining")]:
+        try:
+            r = session.get(
+                f"{NAVER_API_BASE}/stocks/{direction}/{market_code}",
+                params={"page": 1, "pageSize": 1},
+                timeout=10,
+            )
+            if r.status_code == 200:
+                data = r.json()
+                count = data.get("totalCount", 0)
+                if attr == "advancing":
+                    advancing = count
+                else:
+                    declining = count
+        except Exception:
+            pass
 
-    # 지수 정보 (간접 계산 또는 별도 API)
-    # pykrx는 지수 직접 조회가 제한적이므로 대표 종목으로 대체
-    index_name = market_type
+    # 지수 값 파싱
+    index_value = _parse_naver_number(index_data.get("closePrice", "0"))
+    index_change = _parse_naver_number(
+        index_data.get("compareToPreviousClosePrice", "0")
+    )
+    fluctuations_ratio = float(index_data.get("fluctuationsRatio", 0))
 
     return MarketSummary(
         market=Market.KR,
-        date=datetime.strptime(date_str, "%Y%m%d").date(),
-        index_name=index_name,
-        index_value=0,  # TODO: 지수 API 연동
-        index_change=0,
-        index_change_percent=0,
+        date=date.today(),
+        index_name=market_type,
+        index_value=index_value,
+        index_change=index_change,
+        index_change_percent=fluctuations_ratio,
         advancing=advancing,
         declining=declining,
-        unchanged=unchanged,
-        total_volume=int(df["거래량"].sum()) if "거래량" in df.columns else None,
-        total_value=float(df["거래대금"].sum()) if "거래대금" in df.columns else None,
+        unchanged=0,
+        total_volume=None,
+        total_value=None,
     )
 
 
 def get_top_by_market_cap(
     market_type: str = "KOSPI",
-    limit: int = 10
+    limit: int = 10,
 ) -> list[StockInfo]:
     """
     시가총액 상위 종목 조회
@@ -131,51 +183,36 @@ def get_top_by_market_cap(
         market_type: "KOSPI" 또는 "KOSDAQ" 또는 "ALL"
         limit: 조회 개수
     """
-    date_str = get_trading_date()
-
+    session = _naver_session()
     results = []
     markets = ["KOSPI", "KOSDAQ"] if market_type == "ALL" else [market_type]
 
     for mkt in markets:
-        # 시가총액 데이터 조회
-        df_cap = krx.get_market_cap(date_str, market=mkt)
-        # OHLCV 데이터 조회 (가격, 등락률)
-        df_ohlcv = krx.get_market_ohlcv(date_str, market=mkt)
+        market_code = MARKET_CODE_MAP.get(mkt, mkt)
+        page_size = limit if market_type != "ALL" else limit * 2
 
-        # 병합 (중복 컬럼 제거: df_cap에 이미 종가, 거래량 있을 수 있음)
-        ohlcv_cols = [c for c in ["등락률"] if c in df_ohlcv.columns and c not in df_cap.columns]
-        if ohlcv_cols:
-            df = df_cap.join(df_ohlcv[ohlcv_cols], how="left")
-        else:
-            df = df_cap.copy()
-        df = df.sort_values("시가총액", ascending=False)
+        try:
+            r = session.get(
+                f"{NAVER_API_BASE}/stocks/marketValue/{market_code}",
+                params={"page": 1, "pageSize": page_size},
+                timeout=10,
+            )
+            if r.status_code == 200:
+                data = r.json()
+                items = data.get("stocks", [])
+                for item in items:
+                    results.append(_naver_stock_to_stock_info(item))
+        except Exception:
+            continue
 
-        for ticker in df.head(limit if market_type != "ALL" else limit * 2).index:
-            try:
-                name = krx.get_market_ticker_name(ticker)
-                row = df.loc[ticker]
-
-                results.append(StockInfo(
-                    symbol=ticker,
-                    name=name,
-                    market=Market.KR,
-                    price=float(row.get("종가", 0)),
-                    change_percent=float(row.get("등락률", 0)),
-                    volume=int(row.get("거래량", 0)),
-                    market_cap=float(row.get("시가총액", 0)),
-                    fetched_at=datetime.strptime(date_str, "%Y%m%d").date(),
-                ))
-            except Exception:
-                continue
-
-    # 시가총액 기준 정렬 후 상위 N개
+    # 시가총액 기준 정렬
     results.sort(key=lambda x: x.market_cap or 0, reverse=True)
     return results[:limit]
 
 
 def get_top_movers(
     market_type: str = "KOSPI",
-    limit: int = 10
+    limit: int = 10,
 ) -> TopMovers:
     """
     급등/급락/거래량 상위 종목 조회
@@ -184,114 +221,102 @@ def get_top_movers(
         market_type: "KOSPI" 또는 "KOSDAQ"
         limit: 각 카테고리별 조회 개수
     """
-    date_str = get_trading_date()
+    session = _naver_session()
+    market_code = MARKET_CODE_MAP.get(market_type, market_type)
 
-    # OHLCV 데이터 조회 (이미 시가총액 포함됨)
-    df = krx.get_market_ohlcv(date_str, market=market_type)
+    gainers = []
+    losers = []
+    most_active = []
 
-    def to_stock_info(ticker: str, row: pd.Series) -> StockInfo:
-        try:
-            name = krx.get_market_ticker_name(ticker)
-        except Exception:
-            name = ticker
-
-        return StockInfo(
-            symbol=ticker,
-            name=name,
-            market=Market.KR,
-            price=float(row.get("종가", 0)),
-            change_percent=float(row.get("등락률", 0)),
-            volume=int(row.get("거래량", 0)),
-            market_cap=float(row.get("시가총액", 0)) if "시가총액" in row else None,
-            fetched_at=datetime.strptime(date_str, "%Y%m%d").date(),
+    # 상승률 상위
+    try:
+        r = session.get(
+            f"{NAVER_API_BASE}/stocks/up/{market_code}",
+            params={"page": 1, "pageSize": limit},
+            timeout=10,
         )
+        if r.status_code == 200:
+            data = r.json()
+            items = data.get("stocks", [])
+            gainers = [_naver_stock_to_stock_info(item) for item in items]
+    except Exception:
+        pass
 
-    # 상승률 TOP
-    gainers_df = df.sort_values("등락률", ascending=False).head(limit)
-    gainers = [to_stock_info(t, gainers_df.loc[t]) for t in gainers_df.index]
+    # 하락률 상위
+    try:
+        r = session.get(
+            f"{NAVER_API_BASE}/stocks/down/{market_code}",
+            params={"page": 1, "pageSize": limit},
+            timeout=10,
+        )
+        if r.status_code == 200:
+            data = r.json()
+            items = data.get("stocks", [])
+            losers = [_naver_stock_to_stock_info(item) for item in items]
+    except Exception:
+        pass
 
-    # 하락률 TOP
-    losers_df = df.sort_values("등락률", ascending=True).head(limit)
-    losers = [to_stock_info(t, losers_df.loc[t]) for t in losers_df.index]
-
-    # 거래량 TOP
-    active_df = df.sort_values("거래량", ascending=False).head(limit)
-    most_active = [to_stock_info(t, active_df.loc[t]) for t in active_df.index]
+    # 거래량 상위 = 시총 상위 목록에서 거래량 기준 재정렬
+    try:
+        r = session.get(
+            f"{NAVER_API_BASE}/stocks/marketValue/{market_code}",
+            params={"page": 1, "pageSize": 50},
+            timeout=10,
+        )
+        if r.status_code == 200:
+            data = r.json()
+            items = data.get("stocks", [])
+            all_stocks = [_naver_stock_to_stock_info(item) for item in items]
+            # 거래량 기준 정렬
+            all_stocks.sort(key=lambda x: x.volume or 0, reverse=True)
+            most_active = all_stocks[:limit]
+    except Exception:
+        pass
 
     return TopMovers(
         gainers=gainers,
         losers=losers,
         most_active=most_active,
         market=Market.KR,
-        date=datetime.strptime(date_str, "%Y%m%d").date(),
+        date=date.today(),
     )
 
 
 def get_sector_top(
     sector: str,
-    limit: int = 10
+    limit: int = 10,
 ) -> list[StockInfo]:
     """
     섹터별 상위 종목 조회
 
     Args:
-        sector: 섹터 키 (semiconductor, bio, battery 등)
+        sector: 섹터 키 (semiconductor, bio, battery, ai 등)
         limit: 조회 개수
 
     Note:
-        pykrx는 섹터 직접 조회가 제한적이므로,
-        업종별 시가총액 조회 또는 테마 ETF 구성종목 활용
+        테마 ETF 구성종목 또는 시총 상위에서 섹터 필터링
     """
-    date_str = get_trading_date()
-    results = []
+    # 시총 상위에서 관련 종목 추출
+    try:
+        all_stocks = get_top_by_market_cap("ALL", limit=50)
+        # 섹터 키워드 매핑
+        sector_keywords = {
+            "semiconductor": ["반도체", "하이닉스", "삼성전자"],
+            "battery": ["배터리", "2차전지", "에너지솔루션", "에코프로"],
+            "bio": ["바이오", "제약", "셀트리온", "삼성바이오"],
+            "ai": ["AI", "인공지능", "네이버", "카카오"],
+            "financials": ["금융", "은행", "증권", "보험", "KB", "신한"],
+            "technology": ["전자", "IT", "소프트웨어", "LG이노텍"],
+        }
 
-    # 테마 ETF가 있으면 구성종목 활용
-    if sector in THEME_ETFS:
-        for etf_ticker in THEME_ETFS[sector]:
-            try:
-                # ETF 구성종목 조회
-                df = krx.get_etf_portfolio_deposit_file(etf_ticker, date_str)
-                if df is not None and not df.empty:
-                    # 상위 종목 추출
-                    for ticker in df.head(limit).index:
-                        try:
-                            name = krx.get_market_ticker_name(ticker)
-                            # 시가총액 조회
-                            cap_df = krx.get_market_cap(date_str, market="ALL")
-                            ohlcv_df = krx.get_market_ohlcv(date_str, market="ALL")
-
-                            if ticker in cap_df.index:
-                                results.append(StockInfo(
-                                    symbol=ticker,
-                                    name=name,
-                                    market=Market.KR,
-                                    sector=sector,
-                                    price=float(ohlcv_df.loc[ticker, "종가"]) if ticker in ohlcv_df.index else None,
-                                    change_percent=float(ohlcv_df.loc[ticker, "등락률"]) if ticker in ohlcv_df.index else None,
-                                    market_cap=float(cap_df.loc[ticker, "시가총액"]),
-                                    fetched_at=datetime.strptime(date_str, "%Y%m%d").date(),
-                                ))
-                        except Exception:
-                            continue
-            except Exception:
-                continue
-
-    # 업종별 조회 시도
-    if not results:
-        try:
-            # KOSPI 업종별 시가총액
-            sectors_list = krx.get_index_ticker_list(date_str, market="KOSPI")
-            # 섹터 매칭되는 업종 찾기
-            for kr_sector, std_sector in KR_SECTOR_MAP.items():
-                if std_sector == sector:
-                    # 해당 업종 종목 조회 시도
-                    pass  # pykrx 업종별 조회 제한
-        except Exception:
-            pass
-
-    # 시가총액 기준 정렬
-    results.sort(key=lambda x: x.market_cap or 0, reverse=True)
-    return results[:limit]
+        keywords = sector_keywords.get(sector, [sector])
+        results = [
+            stock for stock in all_stocks
+            if any(kw in stock.name for kw in keywords)
+        ]
+        return results[:limit]
+    except Exception:
+        return []
 
 
 def search_stocks(query: str, limit: int = 10) -> list[StockInfo]:
@@ -302,36 +327,62 @@ def search_stocks(query: str, limit: int = 10) -> list[StockInfo]:
         query: 검색어 (종목명 또는 티커)
         limit: 조회 개수
     """
-    date_str = get_trading_date()
+    session = _naver_session()
     results = []
 
-    # 전체 티커 목록
-    for market in ["KOSPI", "KOSDAQ"]:
-        tickers = krx.get_market_ticker_list(date_str, market=market)
+    # Naver 검색 API 활용
+    try:
+        r = session.get(
+            "https://ac.stock.naver.com/ac",
+            params={
+                "q": query,
+                "target": "stock",
+                "st": "t",
+            },
+            timeout=10,
+        )
+        if r.status_code == 200:
+            data = r.json()
+            items = data.get("items", [[]])[0] if data.get("items") else []
 
-        for ticker in tickers:
-            try:
-                name = krx.get_market_ticker_name(ticker)
-                if query.lower() in name.lower() or query in ticker:
-                    # 시가총액, 가격 조회
-                    cap_df = krx.get_market_cap(date_str, market=market)
-                    ohlcv_df = krx.get_market_ohlcv(date_str, market=market)
+            for item in items[:limit]:
+                code = item.get("code", "")
+                name = item.get("name", "")
 
-                    if ticker in cap_df.index:
+                # 개별 종목 상세 조회
+                try:
+                    detail_r = session.get(
+                        f"{NAVER_API_BASE}/stock/{code}/basic",
+                        timeout=10,
+                    )
+                    if detail_r.status_code == 200:
+                        detail = detail_r.json()
                         results.append(StockInfo(
-                            symbol=ticker,
+                            symbol=code,
                             name=name,
                             market=Market.KR,
-                            price=float(ohlcv_df.loc[ticker, "종가"]) if ticker in ohlcv_df.index else None,
-                            change_percent=float(ohlcv_df.loc[ticker, "등락률"]) if ticker in ohlcv_df.index else None,
-                            volume=int(ohlcv_df.loc[ticker, "거래량"]) if ticker in ohlcv_df.index else None,
-                            market_cap=float(cap_df.loc[ticker, "시가총액"]),
-                            fetched_at=datetime.strptime(date_str, "%Y%m%d").date(),
+                            price=_parse_naver_number(
+                                detail.get("closePrice", "0")
+                            ),
+                            change_percent=float(
+                                detail.get("fluctuationsRatio", 0)
+                            ),
+                            volume=_parse_naver_int(
+                                detail.get("accumulatedTradingVolume", "0")
+                            ),
+                            market_cap=_parse_naver_number(
+                                detail.get("marketValue", "0")
+                            ) * 1_0000_0000,
+                            fetched_at=date.today(),
                         ))
-
-                        if len(results) >= limit:
-                            return results
-            except Exception:
-                continue
+                except Exception:
+                    results.append(StockInfo(
+                        symbol=code,
+                        name=name,
+                        market=Market.KR,
+                        fetched_at=date.today(),
+                    ))
+    except Exception:
+        pass
 
     return results

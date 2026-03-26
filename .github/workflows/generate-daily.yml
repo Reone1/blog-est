@@ -1,0 +1,103 @@
+name: Generate Daily Content
+
+on:
+  schedule:
+    # 한국 시간 오후 4시 (장마감 후) - 평일만
+    - cron: '0 7 * * 1-5'  # UTC 07:00 = KST 16:00
+  workflow_dispatch:
+    inputs:
+      content_type:
+        description: '콘텐츠 유형'
+        required: true
+        default: 'daily_briefing'
+        type: choice
+        options:
+          - daily_briefing
+          - std_analysis
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ./tools/stock-researcher
+          pip install -e ./tools/content-generator
+
+      - name: Generate content
+        id: generate
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          CONTENT_TYPE="${{ github.event.inputs.content_type || 'daily_briefing' }}"
+          DATE=$(TZ=Asia/Seoul date +%Y-%m-%d)
+          
+          echo "Generating ${CONTENT_TYPE} for ${DATE}..."
+          
+          python -m content_generator.cli generate \
+            --type "${CONTENT_TYPE}" \
+            --output posts/
+          
+          # 생성된 파일 확인
+          GENERATED_FILE=$(ls -t posts/*.md | head -1)
+          echo "generated_file=${GENERATED_FILE}" >> $GITHUB_OUTPUT
+          echo "content_type=${CONTENT_TYPE}" >> $GITHUB_OUTPUT
+          echo "date=${DATE}" >> $GITHUB_OUTPUT
+
+      - name: Update sidebar
+        run: |
+          python scripts/update_sidebar.py || echo "Sidebar update script not found, skipping..."
+
+      - name: Update sitemap
+        run: |
+          python scripts/update_sitemap.py || echo "Sitemap update script not found, skipping..."
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "content: Add ${{ steps.generate.outputs.content_type }} for ${{ steps.generate.outputs.date }}"
+          title: "[AI Generated] ${{ steps.generate.outputs.content_type }} - ${{ steps.generate.outputs.date }}"
+          body: |
+            ## 🤖 자동 생성된 콘텐츠
+
+            - **유형**: `${{ steps.generate.outputs.content_type }}`
+            - **생성일**: ${{ steps.generate.outputs.date }}
+            - **파일**: `${{ steps.generate.outputs.generated_file }}`
+
+            ### 리뷰 체크리스트
+            
+            - [ ] 📊 데이터 정확성 확인
+            - [ ] ✍️ 문법/맞춤법 검토
+            - [ ] ⚖️ 면책조항 포함 확인
+            - [ ] 🔗 링크 정상 동작 확인
+
+            ---
+            
+            > 이 PR은 GitHub Actions에 의해 자동 생성되었습니다.
+            > 리뷰 후 머지하면 GitHub Pages에 자동 배포됩니다.
+          branch: content/daily-${{ steps.generate.outputs.date }}-${{ github.run_number }}
+          draft: true
+          labels: |
+            ai-generated
+            needs-review
+            daily
