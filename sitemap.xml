@@ -31,6 +31,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://reone1.github.io/blog-est/#/posts/2026-03-27-weekly-review</loc>
+    <lastmod>2026-03-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://reone1.github.io/blog-est/#/posts/2026-03-26-daily-briefing</loc>
     <lastmod>2026-03-26</lastmod>
     <changefreq>daily</changefreq>
