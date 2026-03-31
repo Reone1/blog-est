@@ -35,9 +35,10 @@ legacy:
   sitemap_cmd: "python scripts/update_sitemap.py"
 
 schedule:
-  daily_briefing: "0 16 * * *"       # 매일 16:00 KST
+  daily_briefing: "0 16 * * 1-5"     # 평일 16:00 KST (장마감 후)
+  std_analysis: "0 16 * * 1-5"       # 평일 16:00 KST (데일리와 함께)
   weekly_review: "0 16 * * 5"        # 매주 금요일 16:00 KST
-  monthly_review: "0 16 L * *"       # 매월 말일 16:00 KST
+  monthly_review: "0 0 1 * *"        # 매월 1일 09:00 KST (전월 리뷰)
 
 seo:
   sitemap: true

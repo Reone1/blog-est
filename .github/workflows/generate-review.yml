@@ -2,9 +2,9 @@ name: Generate Weekly/Monthly Review
 
 on:
   schedule:
-    # 금요일 오후 5시 (주간 리뷰) - KST
-    - cron: '0 8 * * 5'  # UTC 08:00 = KST 17:00
-    # 매월 1일 오전 9시 (월간 리뷰) - KST
+    # 금요일 오후 4시 (주간 리뷰) - KST
+    - cron: '0 7 * * 5'  # UTC 07:00 = KST 16:00
+    # 매월 1일 오전 9시 (월간 리뷰, 전월 리뷰) - KST
     - cron: '0 0 1 * *'  # UTC 00:00 = KST 09:00
   workflow_dispatch:
     inputs:
@@ -23,11 +23,10 @@ env:
 
 jobs:
   weekly:
-    if: github.event.schedule == '0 8 * * 5' || github.event.inputs.review_type == 'weekly_review'
+    if: github.event.schedule == '0 7 * * 5' || github.event.inputs.review_type == 'weekly_review'
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
 
     steps:
       - name: Checkout repository
@@ -62,15 +61,13 @@ jobs:
         run: |
           DATE=$(TZ=Asia/Seoul date +%Y-%m-%d)
           WEEK=$(TZ=Asia/Seoul date +%V)
-          
+
           echo "Generating weekly review for week ${WEEK}..."
-          
+
           python -m content_generator.cli generate \
             --type weekly_review \
             --output posts/
-          
-          GENERATED_FILE=$(ls -t posts/*.md | head -1)
-          echo "generated_file=${GENERATED_FILE}" >> $GITHUB_OUTPUT
+
           echo "date=${DATE}" >> $GITHUB_OUTPUT
           echo "week=${WEEK}" >> $GITHUB_OUTPUT
 
@@ -82,42 +79,20 @@ jobs:
         run: |
           python scripts/update_sitemap.py || echo "Sitemap update script not found, skipping..."
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "content: Add weekly review for week ${{ steps.generate.outputs.week }}"
-          title: "[AI Generated] 주간 리뷰 - ${{ steps.generate.outputs.date }}"
-          body: |
-            ## 📅 주간 시장 리뷰
-
-            - **기간**: Week ${{ steps.generate.outputs.week }}
-            - **생성일**: ${{ steps.generate.outputs.date }}
-            - **파일**: `${{ steps.generate.outputs.generated_file }}`
-
-            ### 리뷰 체크리스트
-            
-            - [ ] 📊 주간 데이터 정확성 확인
-            - [ ] ✍️ 문법/맞춤법 검토
-            - [ ] 📈 차트/테이블 확인
-            - [ ] ⚖️ 면책조항 포함 확인
-
-            ---
-            
-            > 이 PR은 GitHub Actions에 의해 자동 생성되었습니다.
-          branch: content/weekly-${{ steps.generate.outputs.date }}
-          draft: true
-          labels: |
-            ai-generated
-            needs-review
-            weekly
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add posts/ _sidebar.md sitemap.xml
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "content: weekly review for week ${{ steps.generate.outputs.week }}"
+          git push origin main
 
   monthly:
     if: github.event.schedule == '0 0 1 * *' || github.event.inputs.review_type == 'monthly_review'
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
 
     steps:
       - name: Checkout repository
@@ -151,17 +126,14 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           DATE=$(TZ=Asia/Seoul date +%Y-%m-%d)
-          MONTH=$(TZ=Asia/Seoul date +%Y-%m)
           PREV_MONTH=$(TZ=Asia/Seoul date -d "1 month ago" +%Y-%m)
-          
+
           echo "Generating monthly review for ${PREV_MONTH}..."
-          
+
           python -m content_generator.cli generate \
             --type monthly_review \
             --output posts/
-          
-          GENERATED_FILE=$(ls -t posts/*.md | head -1)
-          echo "generated_file=${GENERATED_FILE}" >> $GITHUB_OUTPUT
+
           echo "date=${DATE}" >> $GITHUB_OUTPUT
           echo "month=${PREV_MONTH}" >> $GITHUB_OUTPUT
 
@@ -173,33 +145,11 @@ jobs:
         run: |
           python scripts/update_sitemap.py || echo "Sitemap update script not found, skipping..."
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "content: Add monthly review for ${{ steps.generate.outputs.month }}"
-          title: "[AI Generated] 월간 리뷰 - ${{ steps.generate.outputs.month }}"
-          body: |
-            ## 📆 월간 시장 리뷰
-
-            - **대상 월**: ${{ steps.generate.outputs.month }}
-            - **생성일**: ${{ steps.generate.outputs.date }}
-            - **파일**: `${{ steps.generate.outputs.generated_file }}`
-
-            ### 리뷰 체크리스트
-            
-            - [ ] 📊 월간 데이터 정확성 확인
-            - [ ] ✍️ 문법/맞춤법 검토
-            - [ ] 📈 섹터 분석 확인
-            - [ ] 🔮 전망 적절성 검토
-            - [ ] ⚖️ 면책조항 포함 확인
-
-            ---
-            
-            > 이 PR은 GitHub Actions에 의해 자동 생성되었습니다.
-          branch: content/monthly-${{ steps.generate.outputs.month }}
-          draft: true
-          labels: |
-            ai-generated
-            needs-review
-            monthly
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add posts/ _sidebar.md sitemap.xml
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "content: monthly review for ${{ steps.generate.outputs.month }}"
+          git push origin main
