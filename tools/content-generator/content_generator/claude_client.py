@@ -198,7 +198,16 @@ class ClaudeClient:
         self._client = None
         self._mode = None
 
-        # 1. API Key가 있으면 SDK 모드 우선
+        # 1. CLI 모드 우선 (Claude Code Max 구독 지원)
+        if _find_claude_cli():
+            try:
+                self._client = ClaudeCliClient()
+                self._mode = "cli"
+                return
+            except Exception:
+                pass
+
+        # 2. API Key가 있으면 SDK 모드
         effective_key = api_key or os.getenv("ANTHROPIC_API_KEY")
         if effective_key:
             try:
@@ -208,19 +217,11 @@ class ClaudeClient:
             except Exception:
                 pass
 
-        # 2. CLI 모드 시도
-        if _find_claude_cli():
-            try:
-                self._client = ClaudeCliClient()
-                self._mode = "cli"
-                return
-            except Exception:
-                pass
-
         raise ValueError(
             "Claude 인증 수단을 찾을 수 없습니다.\n"
             "다음 중 하나를 설정해주세요:\n"
-            "  1. claude CLI 설치 + setup (claude login)\n"
+            "  1. claude CLI 설치 + 로그인 (claude login)\n"
+            "     → Claude Code Max 구독자는 API Key 없이 사용 가능\n"
             "  2. ANTHROPIC_API_KEY 환경변수 설정"
         )
 
