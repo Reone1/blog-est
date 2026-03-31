@@ -16,9 +16,7 @@ keywords: "best cli tools for developers 2026, developer tools, command line too
 
 ## Why Upgrade Your CLI Toolkit
 
-The command line remains the most efficient interface for many development tasks, but the standard tools shipped with most operating systems -- ls, find, grep, cat -- were designed decades ago. A new generation of CLI tools, mostly written in Rust and Go, offers significant improvements: better defaults, syntax highlighting, faster performance on large codebases, and more intuitive interfaces.
-
-Adopting even a few of these tools can save minutes per day, which compounds into hours per month. Here are the 14 tools worth installing today.
+The standard tools shipped with most operating systems -- ls, find, grep, cat -- were designed decades ago. A new generation of CLI tools, mostly written in Rust and Go, offers better defaults, syntax highlighting, faster performance on large codebases, and more intuitive interfaces. Here are 14 tools worth installing today.
 
 ## Terminal Emulators
 
@@ -43,7 +41,7 @@ brew install ghostty
 flatpak install com.mitchellh.ghostty
 ```
 
-**Why it stands out:** Ghostty manages to be both feature-rich and simple. Unlike terminals that require extensive configuration to look and perform well, Ghostty's defaults are production-ready. Font rendering, color accuracy, and input latency are all excellent without touching a config file.
+Ghostty's defaults are production-ready -- font rendering, color accuracy, and input latency are all excellent without touching a config file.
 
 ### 2. WezTerm
 
@@ -53,21 +51,15 @@ WezTerm is a GPU-accelerated terminal written in Rust with built-in multiplexing
 - Built-in multiplexer (splits, tabs, workspaces) -- no tmux needed
 - Lua-based configuration for complex setups
 - SSH integration with multiplexing
-- Image rendering in the terminal (iTerm2 protocol, Sixel)
 - Cross-platform (macOS, Linux, Windows)
 
 **Install:**
 
 ```bash
-# macOS
-brew install wezterm
-
-# Linux (AppImage)
-curl -LO https://github.com/wez/wezterm/releases/latest/download/WezTerm-nightly.AppImage
-chmod +x WezTerm-nightly.AppImage
+brew install wezterm      # macOS
 ```
 
-**Why it stands out:** WezTerm's Lua configuration makes it exceptionally flexible. You can create dynamic tab titles, custom key bindings with conditional logic, and even integrate external APIs into your terminal status bar.
+WezTerm's Lua configuration makes it exceptionally flexible -- dynamic tab titles, conditional key bindings, and external API integrations are all possible.
 
 ## Git Tools
 
@@ -94,9 +86,7 @@ sudo apt install lazygit
 go install github.com/jesseduffield/lazygit@latest
 ```
 
-**Usage:** Run `lazygit` in any git repository. Navigate with arrow keys. Press `space` to stage/unstage files, `c` to commit, `p` to push. The interactive rebase view (press `r` on the commits panel) lets you squash, edit, reorder, and drop commits visually.
-
-**Why it stands out:** Operations like interactive rebase, cherry-picking across branches, and resolving merge conflicts become dramatically easier with a visual interface. Developers who switch to lazygit report spending 40-50% less time on git operations.
+**Usage:** Run `lazygit` in any git repository. Navigate with arrow keys. Press `space` to stage/unstage files, `c` to commit, `p` to push. The interactive rebase view lets you squash, edit, reorder, and drop commits visually. Developers who switch to lazygit report spending 40-50% less time on git operations.
 
 ### 4. delta
 
@@ -123,7 +113,7 @@ git config --global delta.navigate true
 git config --global delta.side-by-side true
 ```
 
-**Why it stands out:** Standard git diff output is functional but hard to read, especially for large changes. delta transforms diffs into a format that is immediately scannable, with syntax highlighting that matches your editor's color scheme.
+Standard git diff output is functional but hard to read. delta transforms diffs into a format that is immediately scannable, with syntax highlighting that matches your editor's color scheme.
 
 ## File Management
 
@@ -245,17 +235,9 @@ sudo apt install bat    # Debian/Ubuntu (binary may be `batcat`)
 **Usage:**
 
 ```bash
-# View a file with syntax highlighting
-bat src/main.rs
-
-# Show only a range of lines
-bat --line-range 50:75 config.yaml
-
-# Use as a plain cat replacement (no decoration)
-bat --plain data.json
-
-# Concatenate multiple files with headers
-bat src/*.py
+bat src/main.rs                     # View with syntax highlighting
+bat --line-range 50:75 config.yaml  # Show specific lines
+bat --plain data.json               # Plain output (no decoration)
 ```
 
 ### 9. fzf
@@ -287,9 +269,6 @@ export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :500 {}'"
 
 # Interactive git branch checkout
 alias gcb="git branch --all | fzf --preview 'git log --oneline -20 {}' | xargs git checkout"
-
-# Kill a process interactively
-alias fkill="ps aux | fzf --header-lines=1 | awk '{print \$2}' | xargs kill"
 ```
 
 ## Productivity
@@ -330,21 +309,19 @@ zi projects   # Opens fzf with matching directories
 Atuin replaces your shell history with a searchable, synchronized database.
 
 **Key features:**
-- Full-text search across shell history
+- Full-text search across shell history with fuzzy matching
 - Sync history across multiple machines (end-to-end encrypted)
 - Context-aware suggestions (filters by current directory, host, or session)
-- Statistics on command usage
 - Stores exit codes, duration, and working directory per command
 
 **Install:**
 
 ```bash
 bash <(curl --proto '=https' --tlsv1.2 -sSf https://setup.atuin.sh)
-atuin register  # optional: sync across machines
 atuin import auto  # import existing history
 ```
 
-**Usage:** Press `Ctrl+R` and start typing. Atuin searches across your entire history with fuzzy matching, showing the directory and timestamp for each result. Filter by directory with `--cwd` or by exit status with `--exit 0` (only show successful commands).
+**Usage:** Press `Ctrl+R` and start typing. Atuin searches across your entire history, showing the directory and timestamp for each result.
 
 ### 12. jq and yq
 
@@ -388,8 +365,6 @@ btop is a resource monitor that combines the functionality of top, htop, and ios
 - Per-core CPU usage graphs with historical data
 - Process tree view with sorting and filtering
 - GPU monitoring support
-- Mouse-clickable interface in the terminal
-- Themes and customizable layout
 
 **Install:**
 
@@ -398,7 +373,7 @@ brew install btop       # macOS
 sudo apt install btop   # Debian/Ubuntu
 ```
 
-btop displays CPU usage per core as a stacked graph, memory and swap as bar charts, disk I/O rates, network throughput, and a sortable process list -- all updating in real time. It replaces the need to switch between multiple monitoring tools.
+btop displays CPU per core, memory, disk I/O, and network throughput in a single real-time view, replacing the need to switch between top, iostat, and iftop.
 
 ### 14. k9s
 
@@ -421,7 +396,7 @@ sudo apt install k9s    # Debian/Ubuntu (via snap or binary)
 
 **Usage:** Run `k9s` to launch the UI. Type `:pods` to view pods, `:deploy` for deployments, `:svc` for services. Press `l` on a pod to stream logs, `s` to shell into it, `d` to describe it. Use `/` to filter resources by name.
 
-k9s turns Kubernetes management from a series of memorized kubectl commands into a navigable, searchable interface. It is particularly valuable during incident response when you need to quickly inspect pod states, check logs, and restart services.
+k9s turns Kubernetes management from memorized kubectl commands into a navigable, searchable interface -- particularly valuable during incident response.
 
 ## The Compound Effect
 

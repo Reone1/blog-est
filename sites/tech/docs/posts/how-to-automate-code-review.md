@@ -16,11 +16,9 @@ keywords: "how to automate code review process, automated code review, github ac
 
 ## Why Automate Code Review
 
-Manual code review is essential for evaluating architecture decisions, design patterns, and business logic. But reviewers should not be spending their time pointing out missing semicolons, unused imports, security anti-patterns, or style violations. That is what machines are for.
+Manual code review is essential for architecture decisions and business logic, but reviewers should not spend time on missing semicolons, unused imports, or style violations. According to a 2025 study by Google's engineering practices team, automated checks catch an average of 47% of issues that would otherwise surface in manual review -- and they catch them in minutes rather than hours.
 
-According to a 2025 study by Google's engineering practices team, automated checks catch an average of 47% of issues that would otherwise be flagged in manual review. More importantly, they catch them instantly -- within minutes of a pull request being opened, rather than hours or days later when the reviewer gets to it.
-
-The goal is not to replace human review. It is to ensure that by the time a human reviewer opens your pull request, the code is already clean, consistent, and free of known anti-patterns. The reviewer can then focus on what matters: logic, architecture, and maintainability.
+The goal is not to replace human review but to ensure that by the time a reviewer opens your pull request, the code is already clean and free of known anti-patterns.
 
 ## Layer 1: Static Analysis and Linting
 
@@ -83,23 +81,11 @@ line-length = 100
 
 [lint]
 select = [
-  "E",    # pycodestyle errors
-  "W",    # pycodestyle warnings
-  "F",    # pyflakes
-  "I",    # isort
-  "N",    # pep8-naming
-  "UP",   # pyupgrade
-  "B",    # flake8-bugbear
-  "S",    # flake8-bandit (security)
-  "A",    # flake8-builtins
-  "C4",   # flake8-comprehensions
-  "DTZ",  # flake8-datetimez
-  "ISC",  # flake8-implicit-str-concat
-  "PIE",  # flake8-pie
-  "PT",   # flake8-pytest-style
-  "RET",  # flake8-return
-  "SIM",  # flake8-simplify
-  "RUF",  # ruff-specific rules
+  "E", "W", "F",   # pycodestyle + pyflakes
+  "I", "N", "UP",  # isort, naming, pyupgrade
+  "B", "S",        # bugbear, bandit (security)
+  "C4", "SIM",     # comprehensions, simplify
+  "RUF",           # ruff-specific rules
 ]
 
 [lint.per-file-ignores]
@@ -362,11 +348,7 @@ qodana:
 
 ## Layer 4: Custom Review Bots
 
-Sometimes your team has specific rules that no off-the-shelf tool covers. For example: "Every PR that modifies the payments module must include a database migration review," or "API endpoints must have corresponding OpenAPI spec updates."
-
-### Building a Custom Review Bot with GitHub Actions
-
-Here is a workflow that enforces team-specific review rules:
+Sometimes your team has specific rules that no off-the-shelf tool covers. Here is a workflow that enforces team-specific rules like PR size limits and migration file requirements:
 
 ```yaml
 name: Custom Review Rules
@@ -438,78 +420,6 @@ jobs:
               });
             }
 
-      - name: Check for API spec updates
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { data: files } = await github.rest.pulls.listFiles({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-            });
-
-            const hasRouteChanges = files.some(f =>
-              f.filename.match(/src\/routes\/.*\.(ts|js)$/)
-            );
-            const hasSpecUpdate = files.some(f =>
-              f.filename.match(/openapi\.(yaml|json)$/) || f.filename.startsWith('docs/api/')
-            );
-
-            if (hasRouteChanges && !hasSpecUpdate) {
-              await github.rest.pulls.createReview({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.issue.number,
-                event: 'COMMENT',
-                body: 'This PR modifies API routes but does not update the OpenAPI spec. If endpoint signatures changed, please update `openapi.yaml`.'
-              });
-            }
-```
-
-### Building a Reviewdog Integration
-
-Reviewdog is a tool that converts linter output into GitHub PR review comments. It supports any linter that outputs text, making it ideal for integrating custom tools:
-
-```yaml
-name: Reviewdog Linters
-
-on:
-  pull_request:
-
-permissions:
-  contents: read
-  pull-requests: write
-
-jobs:
-  reviewdog:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Run actionlint (GitHub Actions linter)
-        uses: reviewdog/action-actionlint@v1
-        with:
-          reporter: github-pr-review
-
-      - name: Run hadolint (Dockerfile linter)
-        uses: reviewdog/action-hadolint@v1
-        with:
-          reporter: github-pr-review
-
-      - name: Run shellcheck
-        uses: reviewdog/action-shellcheck@v1
-        with:
-          reporter: github-pr-review
-          pattern: "*.sh"
-
-      - name: Custom linter via reviewdog
-        uses: reviewdog/action-setup@v1
-      - run: |
-          # Run any custom script that outputs in a standard format
-          ./scripts/check-naming-conventions.sh \
-            | reviewdog -efm="%f:%l:%c: %m" \
-              -name="naming-conventions" \
-              -reporter=github-pr-review
 ```
 
 ## Putting It All Together: The Review Pipeline
@@ -551,33 +461,12 @@ Developer opens PR
 
 ## Measuring the Impact
 
-Track these metrics before and after implementing automated review to quantify the improvement:
+Track these metrics before and after implementation:
 
-- **Time to first review feedback:** Drops from hours (waiting for a human) to minutes (automated checks).
-- **Number of review rounds:** Typically decreases by 30-40% because trivial issues are caught before human review.
-- **Defects in production:** Teams using layered automated review report 25-35% fewer production incidents related to code quality.
-- **Reviewer satisfaction:** Surveys consistently show reviewers prefer reviewing code that has already passed automated checks. They can focus on meaningful feedback rather than style nitpicks.
-
-You can measure review cycle time directly with GitHub's API:
-
-```bash
-# Get average time from PR open to first review for the last 30 days
-gh api graphql -f query='
-{
-  repository(owner: "your-org", name: "your-repo") {
-    pullRequests(last: 50, states: MERGED) {
-      nodes {
-        createdAt
-        reviews(first: 1) {
-          nodes {
-            createdAt
-          }
-        }
-      }
-    }
-  }
-}'
-```
+- **Time to first review feedback:** Drops from hours to minutes.
+- **Number of review rounds:** Typically decreases by 30-40% as trivial issues are caught automatically.
+- **Defects in production:** Teams report 25-35% fewer production incidents related to code quality.
+- **Reviewer satisfaction:** Reviewers can focus on meaningful feedback rather than style nitpicks.
 
 ## Common Mistakes to Avoid
 

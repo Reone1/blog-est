@@ -347,29 +347,14 @@ This setup gives you TLS termination, automatic certificate renewal, database ba
 
 Consider migrating to Kubernetes when you hit these thresholds:
 
-### Traffic and Scale Triggers
-
 - Your application needs more resources than a single large server can provide
 - You need to scale individual services independently under varying load
 - You require zero-downtime deployments with automated rollback
-
-### Reliability Triggers
-
 - You need automatic failover across multiple hosts or availability zones
-- A single server failure should not cause a full outage
 - Your SLA requires 99.95%+ uptime
-
-### Team and Organization Triggers
-
-- Your team exceeds 10-15 developers working on the same platform
-- Multiple teams need isolated environments with access controls
-- You need audit logging for who deployed what and when
-
-### Operational Triggers
-
+- Your team exceeds 10-15 developers and needs RBAC and namespace isolation
 - You are managing more than 20-30 services
 - You need canary deployments or A/B testing at the infrastructure level
-- You require integration with a service mesh for observability
 
 ## The Middle Ground: Managed Alternatives
 
