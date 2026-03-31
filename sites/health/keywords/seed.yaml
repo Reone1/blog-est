@@ -1,0 +1,217 @@
+# Health site seed keywords
+# Strategy: mixed (evergreen 70% + trending 30%)
+#
+# Tier:
+#   evergreen = 매일 꾸준히 검색되는 건강 기초 지식 (volume 1000+)
+#   trending  = 시의성 있는 건강 트렌드/연구 (volume 100+)
+#   longtail  = 틈새 롱테일 (volume 100+, KD 낮음)
+#
+# Priority: P0 (즉시) → P1 (1개월 내) → P2 (3개월 내)
+# Status: draft | scheduled | published | updated
+
+categories:
+
+  # =============================================
+  # EVERGREEN — 스트레칭 & 운동
+  # =============================================
+  - name: "Stretching & Mobility"
+    tier: evergreen
+    pillar: "daily stretching routine complete guide"
+    keywords:
+      - term: "best stretches for lower back pain"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "morning stretching routine for beginners"
+        priority: P0
+        type: routine
+        status: draft
+      - term: "hip flexor stretches for office workers"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "how to improve flexibility fast"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "neck and shoulder stretches for desk jobs"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "stretching before or after workout"
+        priority: P1
+        type: explainer
+        status: draft
+
+  - name: "Exercise & Fitness"
+    tier: evergreen
+    pillar: "beginner workout guide no equipment"
+    keywords:
+      - term: "best exercises for beginners at home"
+        priority: P0
+        type: listicle
+        status: draft
+      - term: "how to start working out when out of shape"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "benefits of walking 30 minutes a day"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "bodyweight exercises for full body workout"
+        priority: P0
+        type: listicle
+        status: draft
+      - term: "how many times a week should you exercise"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "plank exercise benefits and proper form"
+        priority: P1
+        type: how-to
+        status: draft
+
+  # =============================================
+  # EVERGREEN — 건강 식품 & 영양
+  # =============================================
+  - name: "Healthy Food & Nutrition"
+    tier: evergreen
+    pillar: "healthy eating basics for beginners"
+    keywords:
+      - term: "healthiest foods to eat every day"
+        priority: P0
+        type: listicle
+        status: draft
+      - term: "how much protein do you need per day"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "best foods for gut health"
+        priority: P0
+        type: listicle
+        status: draft
+      - term: "meal prep ideas for beginners healthy"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "anti inflammatory foods list"
+        priority: P0
+        type: listicle
+        status: draft
+      - term: "how to read nutrition labels explained"
+        priority: P1
+        type: explainer
+        status: draft
+
+  - name: "Hydration & Superfoods"
+    tier: evergreen
+    pillar: "hydration and superfoods guide"
+    keywords:
+      - term: "how much water should you drink per day"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "benefits of green tea vs black tea"
+        priority: P1
+        type: comparison
+        status: draft
+      - term: "best superfoods for energy"
+        priority: P1
+        type: listicle
+        status: draft
+      - term: "what to eat before and after workout"
+        priority: P0
+        type: how-to
+        status: draft
+
+  # =============================================
+  # EVERGREEN — 건강 습관 & 수면
+  # =============================================
+  - name: "Daily Habits & Sleep"
+    tier: evergreen
+    pillar: "healthy daily habits that change your life"
+    keywords:
+      - term: "healthy morning routine for energy"
+        priority: P0
+        type: routine
+        status: draft
+      - term: "how to sleep better at night naturally"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "screen time before bed effects on sleep"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "best habits for mental health daily"
+        priority: P0
+        type: listicle
+        status: draft
+      - term: "how to build a habit that sticks"
+        priority: P1
+        type: explainer
+        status: draft
+      - term: "cold shower benefits science explained"
+        priority: P1
+        type: explainer
+        status: draft
+
+  # =============================================
+  # TRENDING — 트렌드 & 최신 연구
+  # =============================================
+  - name: "Trending — Diet & Weight Management"
+    tier: trending
+    keywords:
+      - term: "intermittent fasting benefits and risks 2026"
+        priority: P1
+        type: explainer
+        status: draft
+      - term: "is calorie counting still effective"
+        priority: P1
+        type: myth-busting
+        status: draft
+      - term: "best protein powder for beginners"
+        priority: P1
+        type: comparison
+        status: draft
+      - term: "ozempic alternatives natural weight loss"
+        priority: P2
+        type: explainer
+        status: draft
+
+  - name: "Trending — Recovery & Wellness Tech"
+    tier: trending
+    keywords:
+      - term: "foam rolling benefits does it actually work"
+        priority: P1
+        type: myth-busting
+        status: draft
+      - term: "best recovery tools for muscle soreness"
+        priority: P1
+        type: listicle
+        status: draft
+      - term: "red light therapy benefits evidence"
+        priority: P2
+        type: explainer
+        status: draft
+      - term: "wearable fitness tracker accuracy comparison"
+        priority: P2
+        type: comparison
+        status: draft
+
+  - name: "Myth-Busting"
+    tier: trending
+    keywords:
+      - term: "do you really need 10000 steps a day"
+        priority: P0
+        type: myth-busting
+        status: draft
+      - term: "is breakfast really the most important meal"
+        priority: P1
+        type: myth-busting
+        status: draft
+      - term: "does stretching prevent injuries"
+        priority: P1
+        type: myth-busting
+        status: draft

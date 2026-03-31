@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://totalr-health.vercel.app/sitemap.xml

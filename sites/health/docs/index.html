@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wellness Lab | Healthy Food, Exercise & Daily Habits</title>
+  <meta name="description" content="Evidence-based guides on healthy eating, stretching routines, exercise for beginners, and daily habits. Science-backed wellness tips you can start today." />
+  <meta name="keywords" content="healthy food, stretching routine, exercise for beginners, daily habits, nutrition, wellness, fitness" />
+  <meta name="author" content="Wellness Lab" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://totalr-health.vercel.app/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:title" content="Wellness Lab | Healthy Food, Exercise & Daily Habits" />
+  <meta property="og:description" content="Evidence-based guides on healthy eating, stretching, exercise, and daily habits." />
+  <meta property="og:url" content="https://totalr-health.vercel.app/" />
+  <meta property="og:site_name" content="Wellness Lab" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Wellness Lab" />
+  <meta name="twitter:description" content="Evidence-based guides on healthy eating, stretching, exercise, and daily habits." />
+  <meta name="theme-color" content="#16a34a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "Wellness Lab",
+      "url": "https://totalr-health.vercel.app/",
+      "inLanguage": "en",
+      "description": "Evidence-based guides on healthy eating, stretching routines, exercise for beginners, and daily habits.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Wellness Lab"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="app">Loading...</div>
+
+  <script>
+    window.$docsify = {
+      name: 'Wellness Lab',
+      repo: '',
+      loadSidebar: '_sidebar.md',
+      coverpage: false,
+      homepage: 'home.md',
+      subMaxLevel: 3,
+      auto2top: true,
+      search: 'auto',
+      relativePath: false,
+      themeColor: '#16a34a',
+      alias: {
+        '/.*/_sidebar.md': '/_sidebar.md'
+      },
+      plugins: [
+        function(hook, vm) {
+          hook.beforeEach(function(content) {
+            var meta = {};
+            content = content.replace(/^---\n([\s\S]*?)\n---\s*\n/, function(match, fm) {
+              fm.split('\n').forEach(function(line) {
+                var idx = line.indexOf(':');
+                if (idx > 0) {
+                  var key = line.substring(0, idx).trim();
+                  var value = line.substring(idx + 1).trim().replace(/^["']|["']$/g, '');
+                  meta[key] = value;
+                }
+              });
+              return '';
+            });
+
+            var isArticle = meta.date || meta.type;
+            if (isArticle) {
+              var wordCount = content.replace(/<[^>]*>/g, '').replace(/[#*\[\]()]/g, '').split(/\s+/).length;
+              var readingTime = Math.max(1, Math.ceil(wordCount / 230));
+
+              var typeMap = {
+                'how-to': 'How-To',
+                'explainer': 'Explainer',
+                'listicle': 'Listicle',
+                'myth-busting': 'Myth Busting',
+                'routine': 'Routine'
+              };
+              var category = typeMap[meta.type] || meta.type || '';
+
+              var metaHtml = '\n<div class="article-meta">' +
+                (meta.date ? '<span class="meta-item">' + meta.date + '</span>' : '') +
+                (meta.date ? '<span class="meta-separator">&middot;</span>' : '') +
+                '<span class="meta-item">' + readingTime + ' min read</span>' +
+                (category ? '<span class="meta-separator">&middot;</span><span class="meta-tag">' + category + '</span>' : '') +
+                '</div>\n\n';
+
+              content = content.replace(/^(# .+\n)/m, '$1' + metaHtml);
+            }
+
+            return content;
+          });
+        }
+      ]
+    };
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js" defer></script>
+
+  <!-- Vercel Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

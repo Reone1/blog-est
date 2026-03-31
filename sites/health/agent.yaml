@@ -3,41 +3,61 @@ agent:
   model: "claude-sonnet-4-20250514"
 
 persona:
-  tone: "science-based, accessible, encouraging"
-  audience: "health-conscious adults globally"
-  style: "evidence-based, cite studies, practical tips"
-  niche: "wellness, nutrition, sleep, fitness science"
+  tone: "warm, science-backed, encouraging"
+  audience: "beginners to intermediate health-conscious adults, office workers, busy parents"
+  style: "evidence-based but easy to follow, practical daily tips first"
+  niche: "healthy food, daily habits, stretching, exercise routines, nutrition basics"
 
 content:
   types:
-    - "explainer"
-    - "how-to"
-    - "myth-busting"
-    - "research-digest"
+    - "how-to"             # 실천 가이드 (스트레칭 루틴, 운동법)
+    - "explainer"          # 기초 지식 (영양소, 수면 과학)
+    - "listicle"           # 목록형 (건강 식품, 습관)
+    - "myth-busting"       # 잘못된 상식 바로잡기
+    - "routine"            # 루틴/플랜 (아침 루틴, 주간 운동)
   word_count:
-    min: 1500
-    max: 2500
+    min: 1200
+    max: 2000
   structure:
     include_toc: true
     include_tldr: true
     include_references: true
 
+# 콘텐츠 전략: 2축 운영
+strategy:
+  evergreen:
+    ratio: 0.7                           # 전체 콘텐츠의 70% (건강은 에버그린 비중 높음)
+    description: "기초 건강 지식, 스트레칭/운동 가이드 — 매일 꾸준히 검색"
+    examples:
+      - "best stretches for lower back pain"
+      - "how many calories per day"
+      - "benefits of walking 30 minutes"
+  trending:
+    ratio: 0.3
+    description: "신규 연구 결과, 시즌별 건강 팁, 트렌드 다이어트"
+    examples:
+      - "intermittent fasting new research 2026"
+      - "best supplements for energy"
+
 rules:
   must:
-    - "cite peer-reviewed studies or official health guidelines"
-    - "include practical, actionable takeaways"
+    - "cite peer-reviewed studies or official health guidelines (WHO, NIH, etc.)"
+    - "include practical, actionable takeaways readers can do today"
     - "use accessible language for non-experts"
-    - "add disclaimer for medical topics"
+    - "add medical disclaimer at the end of every post"
+    - "specify exercise difficulty level (beginner/intermediate/advanced)"
   avoid:
     - "specific medical advice or diagnoses"
-    - "specific drug recommendations"
-    - "unverified health claims"
-    - "fear-based messaging"
+    - "specific drug or supplement dosage recommendations"
+    - "unverified health claims or miracle cures"
+    - "fear-based or guilt-based messaging"
+    - "before/after weight loss claims"
 
 keywords:
-  strategy: "longtail"
-  min_volume: 100
-  max_difficulty: 30
+  strategy: "mixed"
+  evergreen_min_volume: 1000
+  trending_min_volume: 100
+  max_difficulty: 35
   seed_file: "./keywords/seed.yaml"
 
 affiliate:
