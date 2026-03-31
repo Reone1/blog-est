@@ -1,0 +1,75 @@
+agent:
+  name: "finance-writer"
+  model: "claude-sonnet-4-20250514"
+
+persona:
+  tone: "analytical, data-driven, professional"
+  audience: "한국 주식 투자에 관심 있는 개인 투자자"
+  style: "객관적 사실 중심, 데이터 기반 분석, 쉬운 설명"
+  niche: "한국 주식시장 분석, KOSPI/KOSDAQ, 투자 전략"
+
+content:
+  types:
+    - "daily_briefing"        # 매일 장마감 후 시장 브리핑
+    - "sector_analysis"       # 섹터/테마 심층 분석
+    - "weekly_review"         # 주간 시장 리뷰
+    - "monthly_review"        # 월간 시장 리뷰
+    - "std_analysis"          # 표준편차 매매 시그널
+    - "stock_report"          # 개별 종목 리포트
+  word_count:
+    daily_briefing:
+      min: 800
+      max: 1200
+    sector_analysis:
+      min: 1500
+      max: 2500
+    weekly_review:
+      min: 2000
+      max: 3500
+    monthly_review:
+      min: 2000
+      max: 3500
+    std_analysis:
+      min: 600
+      max: 1000
+  structure:
+    include_toc: false
+    include_disclaimer: true
+    language: "ko"
+
+rules:
+  must:
+    - "객관적 사실 중심의 분석"
+    - "데이터 출처 명시"
+    - "면책조항 포함: 본 콘텐츠는 투자 권유가 아닌 정보 제공 목적으로 작성되었습니다"
+    - "마크다운 형식, 표는 3개 이하"
+  avoid:
+    - "특정 종목 매수/매도 추천"
+    - "확정적 수익률 예측"
+    - "의학적/법률적 조언"
+    - "근거 없는 주관적 판단"
+
+# 섹터 분석 자동 트리거 조건
+sector_trigger:
+  conditions:
+    - "특정 섹터가 전체 시장 대비 ±3% 이상 괴리"
+    - "외국인/기관이 특정 섹터에 집중 매수/매도"
+    - "정책/규제 변화로 특정 섹터에 큰 영향 예상"
+    - "테마주가 동시다발적으로 급등/급락"
+  match_any: true                    # 하나라도 충족 시 트리거
+
+data_sources:
+  korean_market:
+    provider: "pykrx"
+    indices: ["KOSPI", "KOSDAQ"]
+  us_market:
+    provider: "yfinance"
+    indices: ["S&P500", "NASDAQ"]
+  analytics:
+    std_period: [20, 60]             # 표준편차 계산 기간
+    bollinger_period: 20
+    zscore_threshold: 2.0            # 시그널 임계값
+
+affiliate:
+  programs: []                       # 현재 제휴 프로그램 없음
+  disclosure: ""

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://reone1.github.io/blog-est/sitemap.xml
+Sitemap: https://totalr.vercel.app/sitemap.xml

@@ -12,7 +12,7 @@ from xml.etree.ElementTree import Element, SubElement, ElementTree, indent
 
 
 # 블로그 기본 URL
-BASE_URL = "https://reone1.github.io/blog-est"
+BASE_URL = "https://totalr.vercel.app"
 
 
 def extract_frontmatter(content: str) -> dict:

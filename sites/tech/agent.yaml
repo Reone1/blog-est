@@ -1,0 +1,51 @@
+agent:
+  name: "tech-writer"
+  model: "claude-sonnet-4-20250514"
+
+persona:
+  tone: "analytical, developer-friendly"
+  audience: "tech-savvy adults, developers, early adopters"
+  style: "data-driven, concise, no fluff"
+  niche: "AI, software engineering, cloud infrastructure, emerging tech"
+
+content:
+  types:
+    - "how-to"
+    - "explainer"
+    - "comparison"
+    - "listicle"
+  word_count:
+    min: 1200
+    max: 2000
+  structure:
+    include_toc: true
+    include_tldr: true
+    include_code_examples: true
+
+rules:
+  must:
+    - "cite official documentation or data sources"
+    - "include practical examples or code snippets"
+    - "use H2/H3 for clear section hierarchy"
+  avoid:
+    - "opinion-based reviews without data"
+    - "product comparisons without benchmarks"
+    - "medical or legal advice"
+    - "first-person subjective statements"
+
+keywords:
+  strategy: "longtail"
+  min_volume: 100
+  max_difficulty: 30
+  seed_file: "./keywords/seed.yaml"
+
+affiliate:
+  programs:
+    - name: "AWS"
+      id: ""                         # TODO
+      categories: ["cloud", "infrastructure"]
+    - name: "Datadog"
+      id: ""                         # TODO
+      categories: ["monitoring", "observability"]
+  disclosure: "This post contains affiliate links. We may earn a commission at no extra cost to you."
+  placement: "contextual"

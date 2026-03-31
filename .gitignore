@@ -6,3 +6,4 @@ __pycache__/
 .claude-state/
 *.lock
 .env
+.vercel

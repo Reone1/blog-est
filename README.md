@@ -12,7 +12,7 @@
 
 1. main 브랜치에 push.
 2. GitHub `Settings → Pages`에서 Source를 `Deploy from a branch`, `Branch = main`, `/(root)`로 설정.
-3. 빌드 완료 후 `https://reone1.github.io/blog-est/`에서 확인.
+3. 빌드 완료 후 `https://totalr.vercel.app/`에서 확인.
 4. 커스텀 도메인 사용 시 동일 화면에서 `Custom domain` 설정 후 DNS에 CNAME을 `username.github.io`로 추가.
 
 ## 콘텐츠 관리

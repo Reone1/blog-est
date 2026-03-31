@@ -18,7 +18,7 @@ date: YYYY-MM-DD
 author: "한국 주식시장 분석 블로그"
 category: "카테고리명"
 tags: ["태그1", "태그2", "태그3"]
-image: "https://reone1.github.io/blog-est/assets/포스트-og-image.png"
+image: "https://totalr.vercel.app/assets/포스트-og-image.png"
 ---
 ```
 
@@ -33,25 +33,25 @@ Front Matter 바로 아래에 JSON-LD 구조화 데이터를 추가합니다:
   "@type": "Article",
   "headline": "포스트 제목",
   "description": "포스트 요약 설명",
-  "image": "https://reone1.github.io/blog-est/assets/포스트-og-image.png",
+  "image": "https://totalr.vercel.app/assets/포스트-og-image.png",
   "datePublished": "YYYY-MM-DD",
   "dateModified": "YYYY-MM-DD",
   "author": {
     "@type": "Person",
     "name": "한국 주식시장 분석 블로그",
-    "url": "https://reone1.github.io/blog-est/"
+    "url": "https://totalr.vercel.app/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "한국 주식시장 분석 블로그",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://reone1.github.io/blog-est/assets/logo.png"
+      "url": "https://totalr.vercel.app/assets/logo.png"
     }
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://reone1.github.io/blog-est/#/posts/파일명"
+    "@id": "https://totalr.vercel.app/#/posts/파일명"
   },
   "keywords": ["키워드1", "키워드2", "키워드3"]
 }
@@ -64,7 +64,7 @@ Front Matter 바로 아래에 JSON-LD 구조화 데이터를 추가합니다:
 
 ```xml
 <url>
-  <loc>https://reone1.github.io/blog-est/#/posts/새-포스트-파일명</loc>
+  <loc>https://totalr.vercel.app/#/posts/새-포스트-파일명</loc>
   <lastmod>YYYY-MM-DD</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.8</priority>
@@ -147,7 +147,7 @@ date: YYYY-MM-DD
 author: "한국 주식시장 분석 블로그"
 category: ""
 tags: []
-image: "https://reone1.github.io/blog-est/assets/og-image.png"
+image: "https://totalr.vercel.app/assets/og-image.png"
 ---
 
 <script type="application/ld+json">
@@ -156,25 +156,25 @@ image: "https://reone1.github.io/blog-est/assets/og-image.png"
   "@type": "Article",
   "headline": "",
   "description": "",
-  "image": "https://reone1.github.io/blog-est/assets/og-image.png",
+  "image": "https://totalr.vercel.app/assets/og-image.png",
   "datePublished": "YYYY-MM-DD",
   "dateModified": "YYYY-MM-DD",
   "author": {
     "@type": "Person",
     "name": "한국 주식시장 분석 블로그",
-    "url": "https://reone1.github.io/blog-est/"
+    "url": "https://totalr.vercel.app/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "한국 주식시장 분석 블로그",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://reone1.github.io/blog-est/assets/logo.png"
+      "url": "https://totalr.vercel.app/assets/logo.png"
     }
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://reone1.github.io/blog-est/#/posts/파일명"
+    "@id": "https://totalr.vercel.app/#/posts/파일명"
   },
   "keywords": []
 }

@@ -23,14 +23,14 @@ type: daily_briefing
     "name": "한국 주식시장 분석 블로그",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://reone1.github.io/blog-est/assets/logo.svg"
+      "url": "https://totalr.vercel.app/assets/logo.svg"
     }
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://reone1.github.io/blog-est/#/posts/2026-03-31-daily-briefing"
+    "@id": "https://totalr.vercel.app/#/posts/2026-03-31-daily-briefing"
   },
-  "image": "https://reone1.github.io/blog-est/assets/og-image.svg"
+  "image": "https://totalr.vercel.app/assets/og-image.svg"
 }
 </script>
 

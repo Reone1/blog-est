@@ -1,0 +1,46 @@
+site:
+  name: "korean-stock-analysis"
+  domain: "totalr.vercel.app"
+  language: "ko"
+  description: "코스피·코스닥 주요 종목 분석, 실적 리뷰, 투자 전략을 다루는 한국 주식시장 분석 블로그"
+
+deploy:
+  platform: "vercel"
+  framework: "docsify"
+  root: "."                          # 현재 루트에서 서빙 (모노레포 전환 시 ./docs로 변경)
+  base_url: "https://totalr.vercel.app"
+  vercel:
+    project_id: "prj_EP8CwZomXK6B8g5PddhUAoqW5URA"
+    project_name: "totalr"
+    team_id: "team_T52pPnEA7okMF74h2zik5Ep7"
+    domains:
+      - "totalr.vercel.app"
+      - "totalr-reone1s-projects.vercel.app"
+    # 테스트 프로젝트 (향후 삭제)
+    test_project:
+      project_id: "prj_WfSiO3h3h2YPcIgR47PlNzLAopS0"
+      project_name: "blog-est"
+
+publish:
+  target: "docsify"
+  posts_dir: "posts"                 # 루트 기준 상대 경로
+  sidebar_file: "_sidebar.md"
+  sitemap_file: "sitemap.xml"
+
+# Cowork 스케줄에서 호출하는 현재 Python CLI 경로
+legacy:
+  working_dir: "/Users/reone/dev/blog-est"
+  generate_cmd: "python -m content_generator.cli generate"
+  sidebar_cmd: "python scripts/update_sidebar.py"
+  sitemap_cmd: "python scripts/update_sitemap.py"
+
+schedule:
+  daily_briefing: "0 16 * * *"       # 매일 16:00 KST
+  weekly_review: "0 16 * * 5"        # 매주 금요일 16:00 KST
+  monthly_review: "0 16 L * *"       # 매월 말일 16:00 KST
+
+seo:
+  sitemap: true
+  robots_txt: true
+  canonical_base: "https://totalr.vercel.app"
+  og_image: "assets/og-image.png"

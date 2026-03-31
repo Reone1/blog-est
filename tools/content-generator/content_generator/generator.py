@@ -344,7 +344,7 @@ class ContentGenerator:
 
         # 파일명에서 slug 추출 (.md 제거)
         slug = post.filename.replace(".md", "")
-        post_url = f"https://reone1.github.io/blog-est/#/posts/{slug}"
+        post_url = f"https://totalr.vercel.app/#/posts/{slug}"
         date_str = post.date.strftime("%Y-%m-%d")
 
         # 프론트매터 + JSON-LD Schema 추가
@@ -373,14 +373,14 @@ type: {post.content_type.value}
     "name": "한국 주식시장 분석 블로그",
     "logo": {{
       "@type": "ImageObject",
-      "url": "https://reone1.github.io/blog-est/assets/logo.svg"
+      "url": "https://totalr.vercel.app/assets/logo.svg"
     }}
   }},
   "mainEntityOfPage": {{
     "@type": "WebPage",
     "@id": "{post_url}"
   }},
-  "image": "https://reone1.github.io/blog-est/assets/og-image.svg"
+  "image": "https://totalr.vercel.app/assets/og-image.svg"
 }}
 </script>
 
