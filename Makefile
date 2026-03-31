@@ -29,14 +29,17 @@ generate-all:
 	go run cmd/generate/main.go --all
 
 ## Legacy Python commands (finance site)
-legacy-daily:
-	cd /Users/reone/dev/blog-est && python -m content_generator.cli generate --type daily_briefing --output posts/
+legacy-setup:
+	pip install -e ./tools/content-generator
 
-legacy-weekly:
-	cd /Users/reone/dev/blog-est && python -m content_generator.cli generate --type weekly_review --output posts/
+legacy-daily: legacy-setup
+	python -m content_generator.cli generate --type daily_briefing --output posts/
 
-legacy-monthly:
-	cd /Users/reone/dev/blog-est && python -m content_generator.cli generate --type monthly_review --output posts/
+legacy-weekly: legacy-setup
+	python -m content_generator.cli generate --type weekly_review --output posts/
+
+legacy-monthly: legacy-setup
+	python -m content_generator.cli generate --type monthly_review --output posts/
 
 legacy-sidebar:
 	python scripts/update_sidebar.py

@@ -29,15 +29,15 @@ publish:
 
 # Cowork 스케줄에서 호출하는 현재 Python CLI 경로
 legacy:
-  working_dir: "/Users/reone/dev/blog-est"
   generate_cmd: "python -m content_generator.cli generate"
+  setup_cmd: "pip install -e ./tools/content-generator"
   sidebar_cmd: "python scripts/update_sidebar.py"
   sitemap_cmd: "python scripts/update_sitemap.py"
 
 schedule:
   daily_briefing: "0 16 * * *"       # 매일 16:00 KST
   weekly_review: "0 16 * * 5"        # 매주 금요일 16:00 KST
-  monthly_review: "0 16 L * *"       # 매월 말일 16:00 KST
+  monthly_review: "0 16 28-31 * *"   # 매월 28-31일 16:00 KST (말일 체크 후 실행)
 
 seo:
   sitemap: true
