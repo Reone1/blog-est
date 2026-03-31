@@ -143,7 +143,7 @@ alias ll="eza -l --icons --group-directories-first --git"
 alias tree="eza --tree --icons --level=3"
 ```
 
-The `--git` flag shows the git status of each file inline, so you can see modified, staged, and untracked files at a glance when listing a directory.
+The `--git` flag shows the git status of each file inline.
 
 ### 6. fd
 
@@ -402,4 +402,4 @@ k9s turns Kubernetes management from memorized kubectl commands into a navigable
 
 No single tool on this list will transform your workflow overnight. But together, they eliminate dozens of small frictions: reading uncolored diffs, typing full directory paths, scrolling through unformatted command output, and memorizing obscure flag combinations.
 
-The developers who are most productive at the command line are not the ones who memorize the most flags -- they are the ones who choose tools with better defaults. Every tool on this list works well out of the box. Install them, use them for a week, and the old tools will feel unbearably slow.
+Every tool on this list works well out of the box. Install them, use them for a week, and the old tools will feel unbearably slow.

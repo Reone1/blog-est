@@ -470,12 +470,12 @@ Track these metrics before and after implementation:
 
 ## Common Mistakes to Avoid
 
-**Making every lint rule a blocking error from day one.** If you enable hundreds of rules on an existing codebase, you will generate thousands of violations and your team will bypass or disable the checks. Start with a small set of high-value rules (type safety, security, unused code) and expand gradually.
+**Making every lint rule a blocking error from day one.** Start with a small set of high-value rules (type safety, security, unused code) and expand gradually. Enabling hundreds of rules at once generates thousands of violations and teams will bypass the checks entirely.
 
-**Not running checks on only changed files.** Running linters on the entire codebase for every PR is slow and generates noise from pre-existing issues. Use `git diff` to lint only the files that changed.
+**Not running checks on only changed files.** Use `git diff` to lint only modified files. Running linters on the entire codebase for every PR is slow and surfaces pre-existing issues that create noise.
 
-**Ignoring flaky tests.** A test suite that fails intermittently trains developers to ignore CI results. Fix or quarantine flaky tests immediately. A CI pipeline is only useful if the team trusts it.
+**Ignoring flaky tests.** A test suite that fails intermittently trains developers to ignore CI results. Fix or quarantine flaky tests immediately.
 
-**Over-relying on AI review tools.** AI reviewers are good at catching patterns, but they produce false positives and can miss context-specific issues. Treat AI comments as suggestions, not mandates. Always require at least one human approval.
+**Over-relying on AI review tools.** AI reviewers produce false positives and can miss context-specific issues. Treat AI comments as suggestions and always require at least one human approval.
 
-Automated code review is not a one-time setup. Treat your CI pipeline as a product: monitor its run time, track false positive rates, and regularly update rules based on the types of bugs that slip through to production. The best automated review pipelines evolve continuously alongside the codebase they protect.
+Automated code review is not a one-time setup. Monitor pipeline run times, track false positive rates, and update rules based on what slips through to production.
