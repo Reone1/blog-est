@@ -3,6 +3,7 @@
 
 ## 일간 분석
 
+* [알미늄株 30% 대폭등에도 코스피 3% 급락 — 양극화 장세 속 숨겨진 신호는?](posts/2026-03-31-daily-briefing.md) <small>03/31</small>
 * [2026년 03월 30일 시장 브리핑](posts/2026-03-30-daily-briefing.md) <small>03/30</small>
 * [삼성전자, 52주 신저가 코앞 — 외국인 6일 연속 매도의 끝은 어디인가](posts/2026-03-26-daily-briefing.md) <small>03/26</small>
 
@@ -12,6 +13,7 @@
 
 ## 섹터 분석
 
+* [알미늄 대장정 시작 — 코스피 -2.84% 속 30% 급등의 비밀](posts/2026-03-31-sector-analysis.md) <small>03/31</small>
 * [WTI 원유 급등 해부 — 에너지·화학 섹터 급등락의 구조와 투자 시사점](posts/2026-03-30-sector-analysis.md) <small>03/30</small>
 
 ## 투자 전략
