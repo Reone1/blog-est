@@ -1,0 +1,183 @@
+# Tech site seed keywords
+# Strategy: longtail, informational + commercial intent
+# Target: KD ≤ 30, volume 100+, 3+ words
+#
+# Priority: P0 (KD ≤ 15, quick wins) → P1 (KD ≤ 25) → P2 (KD ≤ 30)
+# Status: draft | scheduled | published | updated
+
+categories:
+  - name: "AI & LLM"
+    pillar: "how to build production AI applications"
+    keywords:
+      - term: "how to run llm locally"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "best open source llm frameworks 2026"
+        priority: P0
+        type: listicle
+        status: draft
+      - term: "llm fine tuning vs rag comparison"
+        priority: P1
+        type: comparison
+        status: draft
+      - term: "how to reduce llm inference cost"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "what is retrieval augmented generation explained"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "llm hallucination causes and solutions"
+        priority: P1
+        type: explainer
+        status: draft
+      - term: "how to evaluate llm output quality"
+        priority: P1
+        type: how-to
+        status: draft
+      - term: "best ai code assistant tools compared"
+        priority: P1
+        type: comparison
+        status: draft
+      - term: "how to build ai agent from scratch"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "llm context window explained simply"
+        priority: P0
+        type: explainer
+        status: draft
+
+  - name: "Cloud Infrastructure"
+    pillar: "kubernetes cost optimization complete guide"
+    keywords:
+      - term: "how to reduce kubernetes cluster costs"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "kubernetes spot instances best practices"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "aws vs gcp vs azure for startups 2026"
+        priority: P1
+        type: comparison
+        status: draft
+      - term: "terraform vs pulumi infrastructure as code"
+        priority: P1
+        type: comparison
+        status: draft
+      - term: "serverless vs containers when to use which"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "how to set up kubernetes monitoring stack"
+        priority: P1
+        type: how-to
+        status: draft
+      - term: "best cloud cost management tools 2026"
+        priority: P1
+        type: listicle
+        status: draft
+      - term: "kubernetes resource limits vs requests explained"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "how to migrate monolith to microservices"
+        priority: P2
+        type: how-to
+        status: draft
+      - term: "docker compose vs kubernetes for small teams"
+        priority: P0
+        type: comparison
+        status: draft
+
+  - name: "Developer Productivity"
+    pillar: "developer workflow automation guide"
+    keywords:
+      - term: "best cli tools for developers 2026"
+        priority: P0
+        type: listicle
+        status: draft
+      - term: "how to automate code review process"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "best terminal emulators compared 2026"
+        priority: P0
+        type: comparison
+        status: draft
+      - term: "how to set up dotfiles management"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "git workflow strategies for small teams"
+        priority: P1
+        type: explainer
+        status: draft
+      - term: "best static site generators compared"
+        priority: P1
+        type: comparison
+        status: draft
+      - term: "how to write effective pull request descriptions"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "ci cd pipeline best practices 2026"
+        priority: P1
+        type: how-to
+        status: draft
+      - term: "monorepo vs polyrepo pros and cons"
+        priority: P1
+        type: explainer
+        status: draft
+      - term: "best developer productivity tools stack"
+        priority: P0
+        type: listicle
+        status: draft
+
+  - name: "Emerging Tech"
+    pillar: "edge computing and webassembly future"
+    keywords:
+      - term: "what is webassembly and why it matters"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "edge computing vs cloud computing explained"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "best rust frameworks for web development"
+        priority: P1
+        type: listicle
+        status: draft
+      - term: "how to get started with webassembly"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "web3 developer tools overview 2026"
+        priority: P2
+        type: listicle
+        status: draft
+      - term: "what is confidential computing explained"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "grpc vs rest api comparison guide"
+        priority: P1
+        type: comparison
+        status: draft
+      - term: "how to build real time applications websockets"
+        priority: P1
+        type: how-to
+        status: draft
+      - term: "best observability tools for microservices"
+        priority: P1
+        type: listicle
+        status: draft
+      - term: "what is platform engineering explained"
+        priority: P0
+        type: explainer
+        status: draft
