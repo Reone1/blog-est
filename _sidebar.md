@@ -3,7 +3,8 @@
 
 ## 일간 분석
 
-* [알미늄株 30% 대폭등에도 코스피 3% 급락 — 양극화 장세 속 숨겨진 신호는?](posts/2026-03-31-daily-briefing.md) <small>03/31</small>
+* [코스피 2,650선 회복에도 혼조세 지속 — 외국인 매도에 맞서는 개인의 한계는 어디까지인가](posts/2026-03-31-daily-briefing.md) <small>03/31</small>
+* [KOSPI 2650 돌파 후 숨겨진 시그널 — Z-score가 말하는 8종목 매매 타이밍](posts/2026-03-31-std-analysis.md) <small>03/31</small>
 * [코스피 -3% 폭락에도 원유화학만 상한가 행진 — WTI 급등이 바꾼 판도](posts/2026-03-30-daily-briefing.md) <small>03/30</small>
 * [삼성전자 59,400원 신저가 속 방산주만 홀로 웃었다 — 외국인 7일 연속 매도에도 기관은 왜 반대매매했나](posts/2026-03-27-daily-briefing.md) <small>03/27</small>
 * [삼성전자, 52주 신저가 코앞 — 외국인 6일 연속 매도의 끝은 어디인가](posts/2026-03-26-daily-briefing.md) <small>03/26</small>

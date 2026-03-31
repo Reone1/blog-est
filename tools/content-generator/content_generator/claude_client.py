@@ -82,7 +82,7 @@ class ClaudeCliClient:
             "--verbose",
             "--model", config.model,
             "--append-system-prompt", combined_system,
-            "--dangerously-skip-permissions",
+            "--permission-mode", "dontAsk",
         ]
 
         result = subprocess.run(
