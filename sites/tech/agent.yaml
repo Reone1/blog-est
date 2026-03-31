@@ -3,17 +3,18 @@ agent:
   model: "claude-sonnet-4-20250514"
 
 persona:
-  tone: "analytical, developer-friendly"
-  audience: "tech-savvy adults, developers, early adopters"
-  style: "data-driven, concise, no fluff"
+  tone: "clear, approachable, developer-friendly"
+  audience: "junior to mid-level developers, CS students, career switchers"
+  style: "beginner-friendly explanations with depth, practical examples first"
   niche: "AI, software engineering, cloud infrastructure, emerging tech"
 
 content:
   types:
-    - "how-to"
-    - "explainer"
-    - "comparison"
-    - "listicle"
+    - "explainer"          # 기초 개념 설명 (에버그린, 높은 검색량)
+    - "how-to"             # 실습형 가이드
+    - "comparison"         # A vs B (일간 검색 트래픽)
+    - "listicle"           # 도구/리소스 목록
+    - "cheatsheet"         # 빠른 참조 (북마크 유도)
   word_count:
     min: 1200
     max: 2000
@@ -22,21 +23,41 @@ content:
     include_tldr: true
     include_code_examples: true
 
+# 콘텐츠 전략: 2축 운영
+strategy:
+  evergreen:
+    ratio: 0.6                           # 전체 콘텐츠의 60%
+    description: "기초 지식, 개념 설명, 입문 가이드 — 매일 꾸준히 검색되는 주제"
+    examples:
+      - "what is Docker"
+      - "git rebase vs merge explained"
+      - "REST API basics"
+  trending:
+    ratio: 0.4                           # 전체 콘텐츠의 40%
+    description: "신기술, 버전 업데이트, 도구 비교 — 시의성 있는 일간 검색어"
+    examples:
+      - "Claude vs GPT comparison 2026"
+      - "new React 20 features"
+      - "best AI code editors 2026"
+
 rules:
   must:
-    - "cite official documentation or data sources"
-    - "include practical examples or code snippets"
+    - "explain concepts as if the reader has 0-1 years of experience"
+    - "include practical examples or code snippets that can be copy-pasted"
     - "use H2/H3 for clear section hierarchy"
+    - "define jargon on first use"
+    - "cite official documentation or data sources"
   avoid:
+    - "assuming advanced prior knowledge without explanation"
     - "opinion-based reviews without data"
-    - "product comparisons without benchmarks"
-    - "medical or legal advice"
+    - "walls of text without code or visuals"
     - "first-person subjective statements"
 
 keywords:
-  strategy: "longtail"
-  min_volume: 100
-  max_difficulty: 30
+  strategy: "mixed"                      # longtail + high-volume foundational
+  evergreen_min_volume: 1000             # 에버그린: 월 1000+ 검색
+  trending_min_volume: 100               # 트렌딩: 월 100+ (성장세 중요)
+  max_difficulty: 35
   seed_file: "./keywords/seed.yaml"
 
 affiliate:

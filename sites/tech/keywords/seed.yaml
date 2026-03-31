@@ -1,12 +1,124 @@
 # Tech site seed keywords
-# Strategy: longtail, informational + commercial intent
-# Target: KD ≤ 30, volume 100+, 3+ words
+# Strategy: mixed (evergreen foundational 60% + trending 40%)
 #
-# Priority: P0 (KD ≤ 15, quick wins) → P1 (KD ≤ 25) → P2 (KD ≤ 30)
+# Tier:
+#   evergreen = 매일 꾸준히 검색되는 기초 지식 (volume 1000+)
+#   trending  = 시의성 있는 트렌드/비교 (volume 100+, 성장세)
+#   longtail  = 틈새 롱테일 (volume 100+, KD 낮음)
+#
+# Priority: P0 (즉시, quick wins) → P1 (1개월 내) → P2 (3개월 내)
 # Status: draft | scheduled | published | updated
 
 categories:
+
+  # =============================================
+  # EVERGREEN — 기초 지식 (높은 검색량, 매일 노출)
+  # =============================================
+  - name: "Foundational — Git & Version Control"
+    tier: evergreen
+    pillar: "git complete beginner guide"
+    keywords:
+      - term: "git rebase vs merge explained"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "how to undo git commit"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "git stash explained with examples"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "git cherry pick how to use"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "git branch naming best practices"
+        priority: P1
+        type: how-to
+        status: draft
+
+  - name: "Foundational — Docker & Containers"
+    tier: evergreen
+    pillar: "docker beginner to production guide"
+    keywords:
+      - term: "what is docker and how does it work"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "dockerfile best practices explained"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "docker volumes explained simply"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "docker networking basics tutorial"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "docker image vs container difference"
+        priority: P0
+        type: explainer
+        status: draft
+
+  - name: "Foundational — API & Web"
+    tier: evergreen
+    pillar: "api design fundamentals"
+    keywords:
+      - term: "rest api basics for beginners"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "http status codes cheat sheet"
+        priority: P0
+        type: cheatsheet
+        status: draft
+      - term: "graphql vs rest api which to choose"
+        priority: P0
+        type: comparison
+        status: draft
+      - term: "what is oauth 2.0 explained simply"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "api rate limiting how it works"
+        priority: P1
+        type: explainer
+        status: draft
+
+  - name: "Foundational — Linux & CLI"
+    tier: evergreen
+    pillar: "linux command line essentials"
+    keywords:
+      - term: "linux commands cheat sheet for developers"
+        priority: P0
+        type: cheatsheet
+        status: draft
+      - term: "bash scripting basics tutorial"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "chmod permissions explained simply"
+        priority: P0
+        type: explainer
+        status: draft
+      - term: "ssh key setup step by step"
+        priority: P0
+        type: how-to
+        status: draft
+      - term: "vim basic commands cheat sheet"
+        priority: P0
+        type: cheatsheet
+        status: draft
+
+  # =============================================
+  # TRENDING — 시의성 있는 검색어
+  # =============================================
   - name: "AI & LLM"
+    tier: trending
     pillar: "how to build production AI applications"
     keywords:
       - term: "how to run llm locally"
@@ -51,6 +163,7 @@ categories:
         status: draft
 
   - name: "Cloud Infrastructure"
+    tier: trending
     pillar: "kubernetes cost optimization complete guide"
     keywords:
       - term: "how to reduce kubernetes cluster costs"
@@ -95,6 +208,7 @@ categories:
         status: draft
 
   - name: "Developer Productivity"
+    tier: longtail
     pillar: "developer workflow automation guide"
     keywords:
       - term: "best cli tools for developers 2026"
@@ -139,6 +253,7 @@ categories:
         status: draft
 
   - name: "Emerging Tech"
+    tier: trending
     pillar: "edge computing and webassembly future"
     keywords:
       - term: "what is webassembly and why it matters"
