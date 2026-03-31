@@ -423,47 +423,6 @@ sudo apt install k9s    # Debian/Ubuntu (via snap or binary)
 
 k9s turns Kubernetes management from a series of memorized kubectl commands into a navigable, searchable interface. It is particularly valuable during incident response when you need to quickly inspect pod states, check logs, and restart services.
 
-## Setting Up Your Toolkit
-
-Here is a script to install all 14 tools on macOS:
-
-```bash
-brew install ghostty wezterm lazygit git-delta eza fd ripgrep bat fzf \
-  zoxide atuin jq yq btop k9s
-
-# Configure shell integrations
-echo 'eval "$(fzf --zsh)"' >> ~/.zshrc
-echo 'eval "$(zoxide init zsh)"' >> ~/.zshrc
-echo 'eval "$(atuin init zsh)"' >> ~/.zshrc
-
-# Set up git-delta
-git config --global core.pager delta
-git config --global delta.side-by-side true
-
-# Add aliases
-cat >> ~/.zshrc << 'ALIASES'
-alias ls="eza --icons --group-directories-first"
-alias ll="eza -l --icons --group-directories-first --git"
-alias tree="eza --tree --icons --level=3"
-alias cat="bat --plain"
-ALIASES
-
-source ~/.zshrc
-```
-
-And for Ubuntu/Debian:
-
-```bash
-sudo apt update && sudo apt install -y eza fd-find ripgrep bat fzf \
-  zoxide jq btop lazygit git-delta
-
-# Tools that need alternate install methods
-go install github.com/jesseduffield/lazygit@latest
-pip install yq
-snap install k9s
-bash <(curl --proto '=https' --tlsv1.2 -sSf https://setup.atuin.sh)
-```
-
 ## The Compound Effect
 
 No single tool on this list will transform your workflow overnight. But together, they eliminate dozens of small frictions: reading uncolored diffs, typing full directory paths, scrolling through unformatted command output, and memorizing obscure flag combinations.
