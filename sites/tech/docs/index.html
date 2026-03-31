@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tech Insights | AI, Cloud & Developer Productivity</title>
+  <meta name="description" content="Data-driven insights on AI, software engineering, cloud infrastructure, and emerging tech. Practical guides, comparisons, and deep dives for developers." />
+  <meta name="keywords" content="AI, LLM, cloud infrastructure, kubernetes, developer tools, software engineering, emerging tech" />
+  <meta name="author" content="Tech Insights" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://totalr-tech.vercel.app/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:title" content="Tech Insights | AI, Cloud & Developer Productivity" />
+  <meta property="og:description" content="Data-driven insights on AI, software engineering, cloud infrastructure, and emerging tech." />
+  <meta property="og:url" content="https://totalr-tech.vercel.app/" />
+  <meta property="og:site_name" content="Tech Insights" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Tech Insights" />
+  <meta name="twitter:description" content="Data-driven insights on AI, software engineering, cloud infrastructure, and emerging tech." />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "Tech Insights",
+      "url": "https://totalr-tech.vercel.app/",
+      "inLanguage": "en",
+      "description": "Data-driven insights on AI, software engineering, cloud infrastructure, and emerging tech.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Tech Insights"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="app">Loading...</div>
+
+  <script>
+    window.$docsify = {
+      name: 'Tech Insights',
+      repo: '',
+      loadSidebar: '_sidebar.md',
+      coverpage: false,
+      homepage: 'home.md',
+      subMaxLevel: 3,
+      auto2top: true,
+      search: 'auto',
+      relativePath: false,
+      themeColor: '#2563eb',
+      alias: {
+        '/.*/_sidebar.md': '/_sidebar.md'
+      },
+      plugins: [
+        function(hook, vm) {
+          hook.beforeEach(function(content) {
+            var meta = {};
+            content = content.replace(/^---\n([\s\S]*?)\n---\s*\n/, function(match, fm) {
+              fm.split('\n').forEach(function(line) {
+                var idx = line.indexOf(':');
+                if (idx > 0) {
+                  var key = line.substring(0, idx).trim();
+                  var value = line.substring(idx + 1).trim().replace(/^["']|["']$/g, '');
+                  meta[key] = value;
+                }
+              });
+              return '';
+            });
+
+            var isArticle = meta.date || meta.type;
+            if (isArticle) {
+              var wordCount = content.replace(/<[^>]*>/g, '').replace(/[#*\[\]()]/g, '').split(/\s+/).length;
+              var readingTime = Math.max(1, Math.ceil(wordCount / 230));
+
+              var typeMap = {
+                'how-to': 'How-To',
+                'explainer': 'Explainer',
+                'comparison': 'Comparison',
+                'listicle': 'Listicle'
+              };
+              var category = typeMap[meta.type] || meta.type || '';
+
+              var metaHtml = '\n<div class="article-meta">' +
+                (meta.date ? '<span class="meta-item">' + meta.date + '</span>' : '') +
+                (meta.date ? '<span class="meta-separator">&middot;</span>' : '') +
+                '<span class="meta-item">' + readingTime + ' min read</span>' +
+                (category ? '<span class="meta-separator">&middot;</span><span class="meta-tag">' + category + '</span>' : '') +
+                '</div>\n\n';
+
+              content = content.replace(/^(# .+\n)/m, '$1' + metaHtml);
+            }
+
+            return content;
+          });
+        }
+      ]
+    };
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-bash.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-javascript.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-python.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-go.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-yaml.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-docker.min.js" defer></script>
+
+  <!-- Vercel Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

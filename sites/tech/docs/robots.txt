@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://totalr-tech.vercel.app/sitemap.xml
