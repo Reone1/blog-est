@@ -54,6 +54,8 @@ jobs:
       - name: Generate content
         id: generate
         env:
+          # API Key가 없으면 Claude CLI 모드로 자동 전환
+          # Claude Code Max 사용자: ANTHROPIC_API_KEY 대신 CLI 인증 사용 가능
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           CONTENT_TYPE="${{ github.event.inputs.content_type || 'daily_briefing' }}"

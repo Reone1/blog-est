@@ -4,7 +4,6 @@ Content Generator CLI
 콘텐츠 생성 명령줄 인터페이스
 """
 
-import os
 from pathlib import Path
 from typing import Optional
 
@@ -38,7 +37,7 @@ def generate(
         None,
         "--api-key",
         envvar="ANTHROPIC_API_KEY",
-        help="Anthropic API 키",
+        help="Anthropic API 키 (없으면 Claude CLI 모드로 자동 전환)",
     ),
     context: Optional[str] = typer.Option(
         None,
@@ -132,20 +131,15 @@ def list_types():
 
 @app.command()
 def test_connection():
-    """Claude API 연결 테스트"""
-    api_key = os.getenv("ANTHROPIC_API_KEY")
-
-    if not api_key:
-        console.print("[red]❌ ANTHROPIC_API_KEY 환경변수가 설정되지 않았습니다.[/red]")
-        raise typer.Exit(1)
-
+    """Claude 연결 테스트 (CLI 모드 또는 API Key 모드)"""
     try:
         from .claude_client import ClaudeClient
 
-        client = ClaudeClient(api_key=api_key)
+        client = ClaudeClient()
+        console.print(f"[blue]🔗 인증 모드: {client.mode}[/blue]")
         response = client.generate("Say 'Hello, connection test successful!' in Korean.")
 
-        console.print("[green]✅ Claude API 연결 성공![/green]")
+        console.print("[green]✅ Claude 연결 성공![/green]")
         console.print(f"응답: {response}")
     except Exception as e:
         console.print(f"[red]❌ 연결 실패: {e}[/red]")
