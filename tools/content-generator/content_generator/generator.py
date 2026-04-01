@@ -75,6 +75,7 @@ class ContentGenerator:
                 get_std_signals,
                 get_market_breadth,
                 get_volatility_ranking,
+                enrich_stocks_detail,
             )
         except ImportError:
             # stock-researcher가 설치되지 않은 경우 더미 데이터
@@ -92,8 +93,13 @@ class ContentGenerator:
                 data["kospi_movers"] = get_top_movers("KOSPI", limit=5)
                 data["kosdaq_movers"] = get_top_movers("KOSDAQ", limit=5)
                 data["market_breadth"] = get_market_breadth("KOSPI")
+                # 시총 상위 종목 상세 지표 (PER/PBR 등)
+                top_stocks = get_top_by_market_cap("KOSPI", limit=10)
+                data["kospi_top_detail"] = enrich_stocks_detail(top_stocks, limit=10)
 
             elif content_type == ContentType.STD_ANALYSIS:
+                data["kospi_summary"] = get_market_summary("KOSPI")
+                data["kosdaq_summary"] = get_market_summary("KOSDAQ")
                 data["kospi_signals"] = get_std_signals("KOSPI", limit=10)
                 data["kosdaq_signals"] = get_std_signals("KOSDAQ", limit=10)
                 data["volatility_ranking"] = get_volatility_ranking(
@@ -102,7 +108,11 @@ class ContentGenerator:
                 data["market_breadth"] = get_market_breadth("KOSPI")
 
             elif content_type == ContentType.SECTOR_ANALYSIS:
+                data["kospi_summary"] = get_market_summary("KOSPI")
                 data["kospi_top"] = get_top_by_market_cap("KOSPI", limit=20)
+                data["kospi_top_detail"] = enrich_stocks_detail(
+                    data["kospi_top"][:10], limit=10
+                )
                 data["kospi_movers"] = get_top_movers("KOSPI", limit=10)
 
             elif content_type in (ContentType.WEEKLY_REVIEW, ContentType.MONTHLY_REVIEW):
@@ -110,6 +120,8 @@ class ContentGenerator:
                 data["kosdaq_summary"] = get_market_summary("KOSDAQ")
                 data["kospi_movers"] = get_top_movers("KOSPI", limit=10)
                 data["market_breadth"] = get_market_breadth("KOSPI")
+                top_stocks = get_top_by_market_cap("KOSPI", limit=10)
+                data["kospi_top_detail"] = enrich_stocks_detail(top_stocks, limit=10)
 
         except Exception as e:
             data["error"] = str(e)
@@ -144,12 +156,15 @@ class ContentGenerator:
         if stock.volume and stock.volume > 0:
             parts.append(f"거래량: {stock.volume:,}")
         if stock.market_cap and stock.market_cap > 0:
-            # 억 단위로 표시
             cap_eok = stock.market_cap / 1_0000_0000
             if cap_eok >= 10000:
                 parts.append(f"시가총액: {cap_eok / 10000:,.1f}조원")
             else:
                 parts.append(f"시가총액: {cap_eok:,.0f}억원")
+        if hasattr(stock, "pe_ratio") and stock.pe_ratio is not None:
+            parts.append(f"PER: {stock.pe_ratio:.2f}")
+        if hasattr(stock, "pb_ratio") and stock.pb_ratio is not None:
+            parts.append(f"PBR: {stock.pb_ratio:.2f}")
         return " | ".join(parts)
 
     def _format_market_data(self, data: dict) -> str:
@@ -229,13 +244,56 @@ class ContentGenerator:
                     ]
                     lines.append(f"- {' | '.join(p for p in parts if p)}")
 
+        if "kospi_top_detail" in data:
+            top_stocks = data["kospi_top_detail"]
+            if top_stocks:
+                lines.append(f"\n## 시가총액 상위 종목 상세 (KOSPI)")
+                for stock in top_stocks:
+                    parts = [f"{stock.name}({stock.symbol})"]
+                    if stock.price and stock.price > 0:
+                        parts.append(f"현재가: {stock.price:,.0f}원")
+                    if stock.change_percent is not None:
+                        parts.append(f"등락률: {stock.change_percent:+.2f}%")
+                    if stock.market_cap and stock.market_cap > 0:
+                        cap_eok = stock.market_cap / 1_0000_0000
+                        if cap_eok >= 10000:
+                            parts.append(f"시가총액: {cap_eok / 10000:,.1f}조원")
+                        else:
+                            parts.append(f"시가총액: {cap_eok:,.0f}억원")
+                    if stock.pe_ratio is not None:
+                        parts.append(f"PER: {stock.pe_ratio:.2f}")
+                    if stock.pb_ratio is not None:
+                        parts.append(f"PBR: {stock.pb_ratio:.2f}")
+                    if stock.dividend_yield is not None:
+                        parts.append(f"배당수익률: {stock.dividend_yield:.2f}%")
+                    if stock.volume and stock.volume > 0:
+                        parts.append(f"거래량: {stock.volume:,}")
+                    lines.append(f"- {' | '.join(parts)}")
+
+        if "volatility_ranking" in data:
+            ranking = data["volatility_ranking"]
+            if ranking:
+                lines.append(f"\n## 변동성 순위 (Z-score 기준)")
+                for vol in ranking[:10]:
+                    parts = [f"{vol.name}({vol.symbol})"]
+                    parts.append(f"현재가: {vol.price:,.0f}원")
+                    parts.append(f"등락률: {vol.change_percent:+.2f}%")
+                    parts.append(f"Z-score: {vol.zscore:.2f}")
+                    parts.append(f"20일MA: {vol.ma_20:,.0f}원")
+                    parts.append(f"볼린저상단: {vol.bb_upper:,.0f}원")
+                    parts.append(f"볼린저하단: {vol.bb_lower:,.0f}원")
+                    parts.append(f"시그널: {vol.signal.value}")
+                    lines.append(f"- {' | '.join(parts)}")
+
         if "market_breadth" in data:
             breadth = data["market_breadth"]
             if hasattr(breadth, "advance_decline_ratio"):
                 lines.append(f"\n## 시장 심리")
+                lines.append(f"- 상승 종목: {breadth.advance_count}개")
+                lines.append(f"- 하락 종목: {breadth.decline_count}개")
                 lines.append(f"- 상승/하락 비율: {breadth.advance_decline_ratio:.2f}")
-                lines.append(f"- 과매도 종목: {breadth.oversold_count}개")
-                lines.append(f"- 과매수 종목: {breadth.overbought_count}개")
+                lines.append(f"- 과매도 종목 (시총 상위 30 중): {breadth.oversold_count}개")
+                lines.append(f"- 과매수 종목 (시총 상위 30 중): {breadth.overbought_count}개")
 
         if "error" in data:
             lines.append(f"\n⚠️ 데이터 수집 중 오류: {data['error']}")

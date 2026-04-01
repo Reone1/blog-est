@@ -72,6 +72,26 @@ def _parse_naver_int(value: str) -> int:
 
 def _naver_stock_to_stock_info(item: dict, market: Market = Market.KR) -> StockInfo:
     """Naver API 종목 데이터를 StockInfo로 변환"""
+    # PER/PBR은 개별 종목 상세 API에서만 제공되므로 있을 때만 파싱
+    pe_ratio = None
+    pb_ratio = None
+    dividend_yield = None
+    if "per" in item:
+        try:
+            pe_ratio = float(item["per"])
+        except (ValueError, TypeError):
+            pass
+    if "pbr" in item:
+        try:
+            pb_ratio = float(item["pbr"])
+        except (ValueError, TypeError):
+            pass
+    if "dividendYield" in item:
+        try:
+            dividend_yield = float(item["dividendYield"])
+        except (ValueError, TypeError):
+            pass
+
     return StockInfo(
         symbol=item.get("itemCode", ""),
         name=item.get("stockName", ""),
@@ -80,6 +100,9 @@ def _naver_stock_to_stock_info(item: dict, market: Market = Market.KR) -> StockI
         change_percent=float(item.get("fluctuationsRatio", 0)),
         volume=_parse_naver_int(item.get("accumulatedTradingVolume", "0")),
         market_cap=_parse_naver_number(item.get("marketValue", "0")) * 1_0000_0000,
+        pe_ratio=pe_ratio,
+        pb_ratio=pb_ratio,
+        dividend_yield=dividend_yield,
         fetched_at=date.today(),
     )
 
@@ -157,6 +180,16 @@ def get_market_summary(market_type: str = "KOSPI") -> MarketSummary:
     )
     fluctuations_ratio = float(index_data.get("fluctuationsRatio", 0))
 
+    # 거래량/거래대금 파싱
+    total_volume = None
+    total_value = None
+    raw_volume = index_data.get("accumulatedTradingVolume")
+    raw_value = index_data.get("accumulatedTradingValue")
+    if raw_volume:
+        total_volume = _parse_naver_int(str(raw_volume))
+    if raw_value:
+        total_value = _parse_naver_number(str(raw_value))
+
     return MarketSummary(
         market=Market.KR,
         date=date.today(),
@@ -167,8 +200,8 @@ def get_market_summary(market_type: str = "KOSPI") -> MarketSummary:
         advancing=advancing,
         declining=declining,
         unchanged=0,
-        total_volume=None,
-        total_value=None,
+        total_volume=total_volume,
+        total_value=total_value,
     )
 
 
@@ -317,6 +350,80 @@ def get_sector_top(
         return results[:limit]
     except Exception:
         return []
+
+
+def enrich_stock_detail(stock: StockInfo) -> StockInfo:
+    """
+    개별 종목 상세 API 호출로 PER, PBR, 배당수익률 등 보강
+
+    Args:
+        stock: 기본 정보가 담긴 StockInfo
+
+    Returns:
+        보강된 StockInfo (원본 변경)
+    """
+    if not stock.symbol:
+        return stock
+
+    session = _naver_session()
+    try:
+        r = session.get(
+            f"{NAVER_API_BASE}/stock/{stock.symbol}/basic",
+            timeout=10,
+        )
+        if r.status_code == 200:
+            detail = r.json()
+
+            # PER
+            if detail.get("per"):
+                try:
+                    stock.pe_ratio = float(detail["per"])
+                except (ValueError, TypeError):
+                    pass
+
+            # PBR
+            if detail.get("pbr"):
+                try:
+                    stock.pb_ratio = float(detail["pbr"])
+                except (ValueError, TypeError):
+                    pass
+
+            # 배당수익률
+            if detail.get("dividendYield"):
+                try:
+                    stock.dividend_yield = float(detail["dividendYield"])
+                except (ValueError, TypeError):
+                    pass
+
+            # 가격 정보 보강 (리스트 API에서 누락됐을 경우)
+            if not stock.price or stock.price == 0:
+                stock.price = _parse_naver_number(
+                    detail.get("closePrice", "0")
+                )
+            if not stock.volume or stock.volume == 0:
+                stock.volume = _parse_naver_int(
+                    detail.get("accumulatedTradingVolume", "0")
+                )
+    except Exception:
+        pass
+
+    return stock
+
+
+def enrich_stocks_detail(
+    stocks: list[StockInfo],
+    limit: int = 10,
+) -> list[StockInfo]:
+    """
+    종목 리스트에 대해 상세 정보 보강 (상위 limit개만)
+
+    Args:
+        stocks: StockInfo 리스트
+        limit: 상세 조회할 최대 종목 수
+    """
+    for stock in stocks[:limit]:
+        enrich_stock_detail(stock)
+    return stocks
 
 
 def search_stocks(query: str, limit: int = 10) -> list[StockInfo]:

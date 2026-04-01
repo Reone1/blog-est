@@ -26,6 +26,8 @@ from .models import (
 
 # 한국 시장
 from .kr_market import (
+    enrich_stock_detail,
+    enrich_stocks_detail,
     get_market_summary,
     get_sector_top,
     get_top_by_market_cap,
@@ -60,6 +62,8 @@ __all__ = [
     "get_top_movers",
     "get_sector_top",
     "search_stocks",
+    "enrich_stock_detail",
+    "enrich_stocks_detail",
     # 변동성 분석
     "calculate_volatility",
     "get_std_signals",
