@@ -21,6 +21,7 @@ TYPE_LABELS = {
     "weekly_review": "주간 리뷰",
     "monthly_review": "월간 리뷰",
     "stock_report": "종목 리포트",
+    "investment_strategy": "투자 전략",
 }
 
 

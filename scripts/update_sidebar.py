@@ -17,9 +17,10 @@ CATEGORIES = {
     "monthly_review": ("월간 분석", 3),
     "sector_analysis": ("섹터 분석", 4),
     "stock_report": ("종목 리포트", 5),
+    "investment_strategy": ("투자 전략", 6),
 }
 
-DEFAULT_CATEGORY = ("투자 전략", 6)
+DEFAULT_CATEGORY = ("기타", 7)
 
 
 def extract_frontmatter(content: str) -> dict:

@@ -16,6 +16,7 @@ content:
     - "monthly_review"        # 월간 시장 리뷰
     - "std_analysis"          # 표준편차 매매 시그널
     - "stock_report"          # 개별 종목 리포트
+    - "investment_strategy"  # 투자 스타일별 전략 브리핑 (매월 15일)
   word_count:
     daily_briefing:
       min: 800
