@@ -135,6 +135,23 @@ class ContentGenerator:
             "note": "테스트 데이터입니다. 실제 데이터는 stock-researcher 설치 후 사용 가능합니다.",
         }
 
+    def _format_stock_detail(self, stock) -> str:
+        """개별 종목의 상세 정보를 텍스트로 변환"""
+        parts = [f"{stock.name}({stock.symbol})"]
+        parts.append(f"등락률: {stock.change_percent:+.2f}%")
+        if stock.price and stock.price > 0:
+            parts.append(f"현재가: {stock.price:,.0f}원")
+        if stock.volume and stock.volume > 0:
+            parts.append(f"거래량: {stock.volume:,}")
+        if stock.market_cap and stock.market_cap > 0:
+            # 억 단위로 표시
+            cap_eok = stock.market_cap / 1_0000_0000
+            if cap_eok >= 10000:
+                parts.append(f"시가총액: {cap_eok / 10000:,.1f}조원")
+            else:
+                parts.append(f"시가총액: {cap_eok:,.0f}억원")
+        return " | ".join(parts)
+
     def _format_market_data(self, data: dict) -> str:
         """시장 데이터를 프롬프트용 텍스트로 변환"""
         lines = []
@@ -144,8 +161,13 @@ class ContentGenerator:
             if hasattr(summary, "index_value"):
                 lines.append(f"## KOSPI")
                 lines.append(f"- 지수: {summary.index_value:,.2f}")
+                lines.append(f"- 전일대비: {summary.index_change:+,.2f}")
                 lines.append(f"- 등락률: {summary.index_change_percent:+.2f}%")
                 lines.append(f"- 상승: {summary.advancing}개, 하락: {summary.declining}개")
+                if summary.total_volume:
+                    lines.append(f"- 총 거래량: {summary.total_volume:,}")
+                if summary.total_value:
+                    lines.append(f"- 총 거래대금: {summary.total_value:,.0f}")
             elif isinstance(summary, dict):
                 lines.append(f"## KOSPI")
                 lines.append(f"- 지수: {summary.get('index_value', 'N/A')}")
@@ -156,7 +178,10 @@ class ContentGenerator:
             if hasattr(summary, "index_value"):
                 lines.append(f"\n## KOSDAQ")
                 lines.append(f"- 지수: {summary.index_value:,.2f}")
+                lines.append(f"- 전일대비: {summary.index_change:+,.2f}")
                 lines.append(f"- 등락률: {summary.index_change_percent:+.2f}%")
+                if summary.advancing or summary.declining:
+                    lines.append(f"- 상승: {summary.advancing}개, 하락: {summary.declining}개")
             elif isinstance(summary, dict):
                 lines.append(f"\n## KOSDAQ")
                 lines.append(f"- 지수: {summary.get('index_value', 'N/A')}")
@@ -166,12 +191,29 @@ class ContentGenerator:
             if hasattr(movers, "gainers") and movers.gainers:
                 lines.append(f"\n## 급등주 (KOSPI)")
                 for stock in movers.gainers[:5]:
-                    lines.append(f"- {stock.name}({stock.symbol}): {stock.change_percent:+.2f}%")
+                    lines.append(f"- {self._format_stock_detail(stock)}")
 
             if hasattr(movers, "losers") and movers.losers:
                 lines.append(f"\n## 급락주 (KOSPI)")
                 for stock in movers.losers[:5]:
-                    lines.append(f"- {stock.name}({stock.symbol}): {stock.change_percent:+.2f}%")
+                    lines.append(f"- {self._format_stock_detail(stock)}")
+
+            if hasattr(movers, "most_active") and movers.most_active:
+                lines.append(f"\n## 거래량 상위 (KOSPI)")
+                for stock in movers.most_active[:5]:
+                    lines.append(f"- {self._format_stock_detail(stock)}")
+
+        if "kosdaq_movers" in data:
+            movers = data["kosdaq_movers"]
+            if hasattr(movers, "gainers") and movers.gainers:
+                lines.append(f"\n## 급등주 (KOSDAQ)")
+                for stock in movers.gainers[:5]:
+                    lines.append(f"- {self._format_stock_detail(stock)}")
+
+            if hasattr(movers, "losers") and movers.losers:
+                lines.append(f"\n## 급락주 (KOSDAQ)")
+                for stock in movers.losers[:5]:
+                    lines.append(f"- {self._format_stock_detail(stock)}")
 
         if "kospi_signals" in data:
             signals = data["kospi_signals"]
@@ -179,11 +221,13 @@ class ContentGenerator:
                 lines.append(f"\n## 표준편차 매매 시그널")
                 for signal in signals[:10]:
                     stock = signal.stock
-                    lines.append(
-                        f"- {stock.name}({stock.symbol}): "
-                        f"Z-score {stock.zscore:.2f}, "
-                        f"{signal.signal_type} ({signal.description})"
-                    )
+                    parts = [
+                        f"{stock.name}({stock.symbol})",
+                        f"현재가: {stock.price:,.0f}원" if stock.price else "",
+                        f"Z-score {stock.zscore:.2f}",
+                        f"{signal.signal_type} ({signal.description})",
+                    ]
+                    lines.append(f"- {' | '.join(p for p in parts if p)}")
 
         if "market_breadth" in data:
             breadth = data["market_breadth"]
@@ -261,15 +305,17 @@ class ContentGenerator:
 객관적이고 정확한 시장 분석을 제공하며, 투자자들이 이해하기 쉬운 언어로 설명합니다.
 
 중요한 원칙:
-1. 항상 객관적 사실에 기반하여 작성합니다.
-2. 특정 종목의 매수/매도를 직접 권유하지 않습니다.
-3. 글 말미에 투자 면책조항을 포함합니다.
-4. 마크다운 형식으로 깔끔하게 작성합니다.
-5. 한국어로 작성합니다.
-6. 이모지를 절대 사용하지 않습니다. 텍스트만으로 작성합니다.
-7. 충분한 분량(4,000-6,000자)으로 심층 분석합니다.
-8. 각 섹션에 구체적인 데이터와 분석적 서술을 포함합니다.
-9. 제목은 독자의 이목을 끌 수 있도록 구체적 종목명/수치를 포함하고, 질문형이나 대시(—) 활용, 대비 구조 등을 사용합니다."""
+1. 반드시 제공된 시장 데이터에 있는 수치만 사용합니다. 데이터에 없는 주가, 종가, 등락률, 거래량, 시가총액 등의 수치를 절대 임의로 생성하거나 추정하지 않습니다.
+2. 제공된 데이터에 특정 수치가 없으면 해당 수치를 언급하지 않거나, 정성적 표현(강세, 약세 등)만 사용합니다.
+3. 종목 테이블 작성 시 현재가는 제공된 데이터의 값을 그대로 사용합니다. 데이터에 현재가가 없으면 테이블에서 현재가 열을 생략합니다.
+4. 특정 종목의 매수/매도를 직접 권유하지 않습니다.
+5. 글 말미에 투자 면책조항을 포함합니다.
+6. 마크다운 형식으로 깔끔하게 작성합니다.
+7. 한국어로 작성합니다.
+8. 이모지를 절대 사용하지 않습니다. 텍스트만으로 작성합니다.
+9. 충분한 분량(4,000-6,000자)으로 심층 분석합니다.
+10. 각 섹션에 구체적인 데이터와 분석적 서술을 포함합니다.
+11. 제목은 독자의 이목을 끌 수 있도록 구체적 종목명/수치를 포함하고, 질문형이나 대시(—) 활용, 대비 구조 등을 사용합니다."""
 
     def _extract_title(
         self,
