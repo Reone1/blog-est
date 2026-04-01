@@ -25,42 +25,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://totalr.vercel.app/#/posts/2026-04-01-monthly-review</loc>
-    <lastmod>2026-04-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://totalr.vercel.app/#/posts/2026-03-31-std-analysis</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://totalr.vercel.app/#/posts/2026-03-31-sector-analysis</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://totalr.vercel.app/#/posts/2026-03-31-daily-briefing</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://totalr.vercel.app/#/posts/2026-03-30-sector-analysis</loc>
-    <lastmod>2026-03-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://totalr.vercel.app/#/posts/2026-03-30-daily-briefing</loc>
-    <lastmod>2026-03-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://totalr.vercel.app/#/posts/2026-03-27-weekly-review</loc>
     <lastmod>2026-03-27</lastmod>
     <changefreq>weekly</changefreq>

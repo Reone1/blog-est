@@ -8,11 +8,10 @@
 ## 오늘의 브리핑
 
 <div class="doc-cards">
-  <a class="doc-card" href="#/posts/2026-03-31-daily-briefing">
-    <h3>코스피 5,052로 4%대 급락 — 알미늄주 30% 급등에도 시장 전체는 공포 모드</h3>
-    <p class="meta">한국 주식시장이 2026년 3월 31일 코스피 4.26%, 코스닥 4.94%라는 강력한 하락세로 3월 마지막 거래일을 마감했다. 상승 종목 734개 대비 하락 종목 1,573개로 하락 우세가 압도적으로 나타나면서 시장 전반의 매도 압력이 극심했음을 보여준다. 특히...</p>
+  <a class="doc-card" href="#/posts/2026-03-27-daily-briefing">
+    <h3>삼성전자 59,400원 신저가 속 방산주만 홀로 웃었다 — 외국인 7일 연속 매도에도 기관은 왜 반대매매했나</h3>
     <div class="card-footer">
-      <span>2026.03.31</span>
+      <span>2026.03.27</span>
       <span class="meta-separator">·</span>
       <span>데일리 브리핑</span>
     </div>
@@ -26,34 +25,18 @@
 ## 최근 분석
 
 <div class="doc-cards">
-  <a class="doc-card" href="#/posts/2026-04-01-monthly-review">
-    <h3>3월 코스피 0.5% 소폭 상승 — 4월 변동성 확대될 3가지 신호</h3>
+  <a class="doc-card" href="#/posts/2026-03-27-weekly-review">
+    <h3>관세 쇼크와 외국인 이탈 — 3월 4주차 주간 시황 리뷰</h3>
     <div class="card-footer">
-      <span>2026.04.01</span>
+      <span>2026.03.27</span>
       <span class="meta-separator">·</span>
-      <span class="card-tag">월간 리뷰</span>
+      <span class="card-tag">주간 리뷰</span>
     </div>
   </a>
-  <a class="doc-card" href="#/posts/2026-03-31-std-analysis">
-    <h3>KOSPI 2650 돌파 후 숨겨진 시그널 — Z-score가 말하는 8종목 매매 타이밍</h3>
+  <a class="doc-card" href="#/posts/2026-03-26-daily-briefing">
+    <h3>삼성전자, 52주 신저가 코앞 — 외국인 6일 연속 매도의 끝은 어디인가</h3>
     <div class="card-footer">
-      <span>2026.03.31</span>
-      <span class="meta-separator">·</span>
-      <span class="card-tag">표준편차 분석</span>
-    </div>
-  </a>
-  <a class="doc-card" href="#/posts/2026-03-31-sector-analysis">
-    <h3>알미늄 대장정 시작 — 코스피 -2.84% 속 30% 급등의 비밀</h3>
-    <div class="card-footer">
-      <span>2026.03.31</span>
-      <span class="meta-separator">·</span>
-      <span class="card-tag">섹터 분석</span>
-    </div>
-  </a>
-  <a class="doc-card" href="#/posts/2026-03-30-daily-briefing">
-    <h3>코스피 -3% 폭락에도 원유화학만 상한가 행진 — WTI 급등이 바꾼 판도</h3>
-    <div class="card-footer">
-      <span>2026.03.30</span>
+      <span>2026.03.26</span>
       <span class="meta-separator">·</span>
       <span class="card-tag">데일리 브리핑</span>
     </div>
