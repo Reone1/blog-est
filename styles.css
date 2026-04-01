@@ -103,6 +103,28 @@ body {
   display: none !important;
 }
 
+/* Sidebar collapsible sections */
+.sidebar-section-closed {
+  display: none !important;
+}
+
+.sidebar-section-open {
+  display: block !important;
+}
+
+.sidebar h2::after {
+  content: "›";
+  float: right;
+  font-size: 14px;
+  color: var(--color-text-tertiary);
+  transition: transform 0.2s ease;
+}
+
+.sidebar h2.sidebar-section-active::after,
+.sidebar h2:has(+ .sidebar-section-open)::after {
+  transform: rotate(90deg);
+}
+
 /* Sidebar section headers */
 .sidebar h1 {
   font-family: var(--font-sans);

@@ -87,9 +87,9 @@
         '/.*/_sidebar.md': '/_sidebar.md'
       },
       plugins: [
+        // 1. Front matter → 메타 정보 삽입
         function(hook, vm) {
           hook.beforeEach(function(content) {
-            // 1. YAML front matter 추출 및 제거
             var meta = {};
             content = content.replace(/^---\n([\s\S]*?)\n---\s*\n/, function(match, fm) {
               fm.split('\n').forEach(function(line) {
@@ -103,17 +103,11 @@
               return '';
             });
 
-            // 2. 포스트 페이지에만 메타 정보 삽입
             var isArticle = meta.date || meta.type;
             if (isArticle) {
-              // 읽기 시간 계산 (한국어: ~500자/분)
               var textLen = content.replace(/<[^>]*>/g, '').replace(/[#*\[\]()]/g, '').length;
               var readingTime = Math.max(1, Math.ceil(textLen / 500));
-
-              // 날짜 포맷
               var dateDisplay = (meta.date || '').split('T')[0].replace(/-/g, '.');
-
-              // 카테고리 매핑
               var typeMap = {
                 'daily_briefing': '데일리 브리핑',
                 'std_analysis': '표준편차 분석',
@@ -123,19 +117,53 @@
                 'stock_report': '종목 리포트'
               };
               var category = typeMap[meta.type] || meta.category || '';
-
-              // H1 뒤에 메타 블록 삽입
               var metaHtml = '\n<div class="article-meta">' +
                 (dateDisplay ? '<span class="meta-item">' + dateDisplay + '</span>' : '') +
                 (dateDisplay ? '<span class="meta-separator">·</span>' : '') +
                 '<span class="meta-item">' + readingTime + '분 읽기</span>' +
                 (category ? '<span class="meta-separator">·</span><span class="meta-item">' + category + '</span>' : '') +
                 '</div>\n\n';
-
               content = content.replace(/^(# .+\n)/m, '$1' + metaHtml);
             }
-
             return content;
+          });
+        },
+        // 2. 사이드바 collapsible — 활성 섹션만 펼침
+        function(hook, vm) {
+          hook.doneEach(function() {
+            var nav = document.querySelector('.sidebar-nav');
+            if (!nav) return;
+
+            // 각 h2 섹션 헤더를 클릭 가능하게 만들고 하위 목록을 토글
+            var headers = nav.querySelectorAll('h2');
+            headers.forEach(function(h2) {
+              // h2 다음의 ul (글 목록)을 찾기
+              var ul = h2.nextElementSibling;
+              if (!ul || ul.tagName !== 'UL') return;
+
+              // 이 섹션에 활성 링크가 있는지 확인
+              var hasActive = ul.querySelector('li.active');
+
+              // 기본: 활성 섹션만 펼침, 나머지 접기
+              if (hasActive) {
+                ul.classList.add('sidebar-section-open');
+                h2.classList.add('sidebar-section-active');
+              } else {
+                ul.classList.add('sidebar-section-closed');
+              }
+
+              // 클릭으로 토글
+              h2.style.cursor = 'pointer';
+              h2.addEventListener('click', function() {
+                if (ul.classList.contains('sidebar-section-closed')) {
+                  ul.classList.remove('sidebar-section-closed');
+                  ul.classList.add('sidebar-section-open');
+                } else {
+                  ul.classList.remove('sidebar-section-open');
+                  ul.classList.add('sidebar-section-closed');
+                }
+              });
+            });
           });
         }
       ]
