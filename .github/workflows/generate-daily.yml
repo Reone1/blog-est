@@ -14,10 +14,10 @@ on:
         options:
           - daily_briefing
           - std_analysis
+          - sector_analysis
 
 env:
   PYTHON_VERSION: '3.11'
-  NODE_VERSION: '20'
 
 jobs:
   generate:
@@ -31,14 +31,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Install Claude CLI
-        run: npm install -g @anthropic-ai/claude-code
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -51,11 +43,19 @@ jobs:
           pip install -e ./tools/stock-researcher
           pip install -e ./tools/content-generator
 
+      - name: Verify data access
+        run: |
+          python -c "
+          from stock_researcher import get_market_summary
+          s = get_market_summary('KOSPI')
+          print(f'KOSPI: {s.index_value:,.2f} ({s.index_change_percent:+.2f}%)')
+          assert s.index_value > 0, 'KOSPI 지수 데이터 조회 실패'
+          print('Data access OK')
+          "
+
       - name: Generate content
         id: generate
         env:
-          # API Key가 없으면 Claude CLI 모드로 자동 전환
-          # Claude Code Max 사용자: ANTHROPIC_API_KEY 대신 CLI 인증 사용 가능
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           CONTENT_TYPE="${{ github.event.inputs.content_type || 'daily_briefing' }}"
@@ -78,19 +78,25 @@ jobs:
           echo "date=${DATE}" >> $GITHUB_OUTPUT
           echo "content_type=${CONTENT_TYPE}" >> $GITHUB_OUTPUT
 
-      - name: Update sidebar
+      - name: Generate charts
         run: |
-          python scripts/update_sidebar.py || echo "Sidebar update script not found, skipping..."
+          pip install matplotlib
+          python scripts/generate_charts.py || echo "Chart generation failed, skipping..."
+
+      - name: Update sidebar
+        run: python scripts/update_sidebar.py || echo "Skipping..."
 
       - name: Update sitemap
-        run: |
-          python scripts/update_sitemap.py || echo "Sitemap update script not found, skipping..."
+        run: python scripts/update_sitemap.py || echo "Skipping..."
+
+      - name: Update home
+        run: python scripts/update_home.py || echo "Skipping..."
 
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add posts/ _sidebar.md sitemap.xml
+          git add posts/ assets/ _sidebar.md sitemap.xml home.md
           git diff --cached --quiet && echo "No changes to commit" && exit 0
           git commit -m "content: ${{ steps.generate.outputs.content_type }} for ${{ steps.generate.outputs.date }}"
           git push origin main
