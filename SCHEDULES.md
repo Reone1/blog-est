@@ -20,8 +20,9 @@ blog-est 레포에서 다음을 순서대로 실행해줘:
 3. python -m content_generator.cli generate --type std_analysis --output posts/
 4. python scripts/update_sidebar.py
 5. python scripts/update_sitemap.py
-6. 변경된 파일을 git add 후 커밋 메시지: "content: daily briefing + std analysis for {오늘 날짜}"
-7. git push origin main
+6. python scripts/update_home.py
+7. 변경된 파일을 git add 후 커밋 메시지: "content: daily briefing + std analysis for {오늘 날짜}"
+8. git push origin main
 ```
 
 ---
@@ -40,8 +41,9 @@ blog-est 레포에서 다음을 순서대로 실행해줘:
 2. python -m content_generator.cli generate --type weekly_review --output posts/
 3. python scripts/update_sidebar.py
 4. python scripts/update_sitemap.py
-5. 변경된 파일을 git add 후 커밋 메시지: "content: weekly review for {오늘 날짜}"
-6. git push origin main
+5. python scripts/update_home.py
+6. 변경된 파일을 git add 후 커밋 메시지: "content: weekly review for {오늘 날짜}"
+7. git push origin main
 ```
 
 ---
@@ -60,6 +62,7 @@ blog-est 레포에서 다음을 순서대로 실행해줘:
 2. python -m content_generator.cli generate --type monthly_review --output posts/
 3. python scripts/update_sidebar.py
 4. python scripts/update_sitemap.py
-5. 변경된 파일을 git add 후 커밋 메시지: "content: monthly review for {지난달}"
-6. git push origin main
+5. python scripts/update_home.py
+6. 변경된 파일을 git add 후 커밋 메시지: "content: monthly review for {지난달}"
+7. git push origin main
 ```

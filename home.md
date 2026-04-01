@@ -10,7 +10,7 @@
 <div class="doc-cards">
   <a class="doc-card" href="#/posts/2026-03-31-daily-briefing">
     <h3>코스피 5,052로 4%대 급락 — 알미늄주 30% 급등에도 시장 전체는 공포 모드</h3>
-    <p class="meta">한국 주식시장이 코스피 4.26%, 코스닥 4.94%라는 강력한 하락세로 3월 마지막 거래일을 마감했다. 알미늄 관련주들이 30% 가까운 급등을 기록한 것과 대조적으로 시장 전반의 매도 압력이 극심했다.</p>
+    <p class="meta">한국 주식시장이 2026년 3월 31일 코스피 4.26%, 코스닥 4.94%라는 강력한 하락세로 3월 마지막 거래일을 마감했다. 상승 종목 734개 대비 하락 종목 1,573개로 하락 우세가 압도적으로 나타나면서 시장 전반의 매도 압력이 극심했음을 보여준다. 특히...</p>
     <div class="card-footer">
       <span>2026.03.31</span>
       <span class="meta-separator">·</span>
@@ -34,20 +34,20 @@
       <span class="card-tag">월간 리뷰</span>
     </div>
   </a>
-  <a class="doc-card" href="#/posts/2026-03-31-sector-analysis">
-    <h3>알미늄 대장정 시작 — 코스피 -2.84% 속 30% 급등의 비밀</h3>
-    <div class="card-footer">
-      <span>2026.03.31</span>
-      <span class="meta-separator">·</span>
-      <span class="card-tag">섹터 분석</span>
-    </div>
-  </a>
   <a class="doc-card" href="#/posts/2026-03-31-std-analysis">
     <h3>KOSPI 2650 돌파 후 숨겨진 시그널 — Z-score가 말하는 8종목 매매 타이밍</h3>
     <div class="card-footer">
       <span>2026.03.31</span>
       <span class="meta-separator">·</span>
       <span class="card-tag">표준편차 분석</span>
+    </div>
+  </a>
+  <a class="doc-card" href="#/posts/2026-03-31-sector-analysis">
+    <h3>알미늄 대장정 시작 — 코스피 -2.84% 속 30% 급등의 비밀</h3>
+    <div class="card-footer">
+      <span>2026.03.31</span>
+      <span class="meta-separator">·</span>
+      <span class="card-tag">섹터 분석</span>
     </div>
   </a>
   <a class="doc-card" href="#/posts/2026-03-30-daily-briefing">
