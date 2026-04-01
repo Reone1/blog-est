@@ -374,6 +374,33 @@ body {
 }
 
 /* ========================================
+   Inline Table of Contents (in-article)
+   ======================================== */
+.inline-toc {
+  background: var(--color-accent-light);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 0 6px 6px 0;
+  padding: 14px 20px;
+  margin: 0 0 2em;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inline-toc a {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary) !important;
+  text-decoration: none !important;
+  line-height: 1.6;
+  transition: color 0.15s ease;
+}
+
+.inline-toc a:hover {
+  color: var(--color-accent) !important;
+}
+
+/* ========================================
    Homepage — Header & Subtitle
    ======================================== */
 .home-subtitle {

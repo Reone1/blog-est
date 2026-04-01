@@ -78,7 +78,7 @@
       loadSidebar: '_sidebar.md',
       coverpage: false,
       homepage: 'home.md',
-      subMaxLevel: 2,
+      subMaxLevel: 0,
       auto2top: true,
       search: 'auto',
       relativePath: false,
@@ -124,6 +124,20 @@
                 (category ? '<span class="meta-separator">·</span><span class="meta-item">' + category + '</span>' : '') +
                 '</div>\n\n';
               content = content.replace(/^(# .+\n)/m, '$1' + metaHtml);
+
+              // 본문 h2 기반 인라인 ToC 생성
+              var headings = content.match(/^## .+/gm);
+              if (headings && headings.length > 1) {
+                var tocHtml = '<nav class="inline-toc">\n';
+                headings.forEach(function(h) {
+                  var text = h.replace(/^## /, '');
+                  var id = text.toLowerCase().replace(/[^\w가-힣]+/g, '-').replace(/^-|-$/g, '');
+                  tocHtml += '<a href="#' + id + '">' + text + '</a>\n';
+                });
+                tocHtml += '</nav>\n\n';
+                // 메타 블록 다음에 ToC 삽입
+                content = content.replace(/(<\/div>\n\n)/, '$1' + tocHtml);
+              }
             }
             return content;
           });
