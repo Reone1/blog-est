@@ -16,46 +16,47 @@ NAVER_HEADERS = {
     "Referer": "https://m.stock.naver.com/",
 }
 
-MARKET_TYPES = {"KOSPI", "KOSDAQ"}
 
-
-def _naver_get(path: str) -> dict:
+def _naver_get(path: str) -> dict | list | None:
     conn = HTTPSConnection("m.stock.naver.com", timeout=10)
-    conn.request("GET", path, headers=NAVER_HEADERS)
+    conn.request("GET", f"/api{path}", headers=NAVER_HEADERS)
     resp = conn.getresponse()
     data = resp.read().decode("utf-8")
     conn.close()
     if resp.status != 200:
-        raise Exception(f"Naver API {resp.status}: {data[:200]}")
+        return None
     return json.loads(data)
 
 
-def _collect_market_data(market_type: str) -> dict:
+def _collect_all() -> dict:
+    """KOSPI + KOSDAQ 전체 데이터 수집"""
     result = {}
-    result["basic"] = _naver_get(f"/api/index/{market_type}/basic")
-    for category in ["rise", "fall", "volume"]:
-        result[category] = _naver_get(
-            f"/api/index/{market_type}/ranking/{category}?page=1&pageSize=5"
-        )
+
+    for market in ["KOSPI", "KOSDAQ"]:
+        m = {}
+
+        # 지수 기본 정보
+        m["basic"] = _naver_get(f"/index/{market}/basic")
+
+        # 상승 종목
+        m["rise"] = _naver_get(f"/stocks/up/{market}?page=1&pageSize=10")
+
+        # 하락 종목
+        m["fall"] = _naver_get(f"/stocks/down/{market}?page=1&pageSize=10")
+
+        # 시가총액 상위
+        m["market_cap"] = _naver_get(f"/stocks/marketValue/{market}?page=1&pageSize=10")
+
+        result[market] = m
+
     return result
 
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
-            query = parse_qs(urlparse(self.path).query)
-            market = query.get("market", ["KOSPI"])[0].upper()
-
-            if market not in MARKET_TYPES:
-                self._respond(400, {"error": f"Invalid market: {market}"})
-                return
-
-            data = {}
-            for m in MARKET_TYPES:
-                data[m] = _collect_market_data(m)
-
+            data = _collect_all()
             self._respond(200, data)
-
         except Exception as e:
             self._respond(500, {"error": str(e)})
 
