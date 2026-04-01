@@ -1,5 +1,5 @@
 site:
-  name: "korean-stock-analysis"
+  name: "stoquote"
   domain: "totalr.vercel.app"
   language: "ko"
   description: "코스피·코스닥 주요 종목 분석, 실적 리뷰, 투자 전략을 다루는 한국 주식시장 분석 블로그"
