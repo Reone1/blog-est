@@ -5,7 +5,7 @@ Claude Code 스케줄 태스크에서 사용하는 시장 데이터 API.
 네이버 Finance 모바일 API를 프록시하여 KOSPI/KOSDAQ 데이터를 제공합니다.
 
 엔드포인트:
-  GET /api/market              — 전체 시장 데이터 (기본)
+  GET /api/market              — 전체 시장 데이터 (기본, 수급+업종 포함)
   GET /api/market?type=detail  — 시총 상위 20종목 개별 상세 포함
 """
 
@@ -57,7 +57,23 @@ def _collect_market(market: str) -> dict:
     m["rise"] = _naver_get(f"/stocks/up/{market}?page=1&pageSize=10")
     m["fall"] = _naver_get(f"/stocks/down/{market}?page=1&pageSize=10")
     m["market_cap"] = _naver_get(f"/stocks/marketValue/{market}?page=1&pageSize=20")
+
+    # 수급 + 상승/하락 종목수 (integration 엔드포인트)
+    integration = _naver_get(f"/index/{market}/integration")
+    if integration:
+        m["investor"] = integration.get("dealTrendInfo")
+        m["program"] = integration.get("programTrendInfo")
+        m["updown"] = integration.get("upDownStockInfo")
+
     return m
+
+
+def _collect_industry() -> list | None:
+    """업종별 등락률 (전체 79개 업종)"""
+    data = _naver_get("/stocks/industry?page=1&pageSize=80")
+    if data and isinstance(data, dict):
+        return data.get("groups")
+    return None
 
 
 def _enrich_with_details(data: dict) -> dict:
@@ -100,6 +116,11 @@ class handler(BaseHTTPRequestHandler):
             data = {}
             for market in ["KOSPI", "KOSDAQ"]:
                 data[market] = _collect_market(market)
+
+            # 업종별 등락률 (KOSPI/KOSDAQ 통합)
+            industry = _collect_industry()
+            if industry:
+                data["industry"] = industry
 
             # detail 모드: 시총 상위 종목 개별 상세 추가
             if data_type == "detail":
