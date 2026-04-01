@@ -287,7 +287,7 @@ def process_post(post_path: Path, charts_dir: Path) -> str | None:
         return None
 
     # 본문에 이미지 태그가 이미 있으면 건너뛰기
-    chart_ref = f"assets/charts/{stem}.png"
+    chart_ref = f"/assets/charts/{stem}.png"
     if chart_ref in content:
         print(f"  이미 이미지 삽입됨: {stem}")
         return chart_ref
