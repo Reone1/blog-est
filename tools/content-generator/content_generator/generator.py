@@ -77,8 +77,10 @@ class ContentGenerator:
                 get_volatility_ranking,
             )
         except ImportError:
-            # stock-researcher가 설치되지 않은 경우 더미 데이터
-            return self._get_dummy_data(content_type)
+            raise RuntimeError(
+                "stock-researcher 모듈이 설치되지 않았습니다. "
+                "실제 시장 데이터 없이는 콘텐츠를 생성할 수 없습니다."
+            )
 
         data = {
             "date": datetime.now().strftime("%Y년 %m월 %d일"),
@@ -112,28 +114,12 @@ class ContentGenerator:
                 data["market_breadth"] = get_market_breadth("KOSPI")
 
         except Exception as e:
-            data["error"] = str(e)
-            data.update(self._get_dummy_data(content_type))
+            raise RuntimeError(
+                f"시장 데이터 수집 실패: {e}. "
+                "실제 데이터 없이는 콘텐츠를 생성할 수 없습니다."
+            )
 
         return data
-
-    def _get_dummy_data(self, content_type: ContentType) -> dict:
-        """더미 데이터 (테스트용)"""
-        return {
-            "kospi_summary": {
-                "index_value": 2650.0,
-                "index_change_percent": 0.5,
-                "advancing": 450,
-                "declining": 350,
-            },
-            "kosdaq_summary": {
-                "index_value": 850.0,
-                "index_change_percent": -0.3,
-                "advancing": 380,
-                "declining": 420,
-            },
-            "note": "테스트 데이터입니다. 실제 데이터는 stock-researcher 설치 후 사용 가능합니다.",
-        }
 
     def _format_market_data(self, data: dict) -> str:
         """시장 데이터를 프롬프트용 텍스트로 변환"""
