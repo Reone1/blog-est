@@ -15,7 +15,7 @@
 title: "포스트 제목 (60자 이내 권장)"
 description: "포스트 요약 설명 (155자 이내)"
 date: YYYY-MM-DD
-author: "한국 주식시장 분석 블로그"
+author: "스토쿼트"
 category: "카테고리명"
 tags: ["태그1", "태그2", "태그3"]
 image: "https://totalr.vercel.app/assets/포스트-og-image.png"
@@ -38,12 +38,12 @@ Front Matter 바로 아래에 JSON-LD 구조화 데이터를 추가합니다:
   "dateModified": "YYYY-MM-DD",
   "author": {
     "@type": "Person",
-    "name": "한국 주식시장 분석 블로그",
+    "name": "스토쿼트",
     "url": "https://totalr.vercel.app/"
   },
   "publisher": {
     "@type": "Organization",
-    "name": "한국 주식시장 분석 블로그",
+    "name": "스토쿼트",
     "logo": {
       "@type": "ImageObject",
       "url": "https://totalr.vercel.app/assets/logo.png"
@@ -144,7 +144,7 @@ Front Matter 바로 아래에 JSON-LD 구조화 데이터를 추가합니다:
 title: ""
 description: ""
 date: YYYY-MM-DD
-author: "한국 주식시장 분석 블로그"
+author: "스토쿼트"
 category: ""
 tags: []
 image: "https://totalr.vercel.app/assets/og-image.png"
@@ -161,12 +161,12 @@ image: "https://totalr.vercel.app/assets/og-image.png"
   "dateModified": "YYYY-MM-DD",
   "author": {
     "@type": "Person",
-    "name": "한국 주식시장 분석 블로그",
+    "name": "스토쿼트",
     "url": "https://totalr.vercel.app/"
   },
   "publisher": {
     "@type": "Organization",
-    "name": "한국 주식시장 분석 블로그",
+    "name": "스토쿼트",
     "logo": {
       "@type": "ImageObject",
       "url": "https://totalr.vercel.app/assets/logo.png"

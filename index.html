@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>스토쿼트 | KOSPI · KOSDAQ 리서치</title>
   <meta name="description" content="코스피·코스닥 주요 종목 분석, 실적 리뷰, 투자 전략을 다루는 한국 주식시장 분석 블로그입니다." />
-  <meta name="keywords" content="한국 주식시장, 코스피, 코스닥, 종목 분석, 실적 리뷰, 투자 전략, 리서치, 밸류에이션" />
+  <meta name="keywords" content="스토쿼트, Stoquote, 한국 주식시장, 코스피, 코스닥, 종목 분석, 실적 리뷰, 투자 전략, 데일리 브리핑, 섹터 분석, 표준편차 매매" />
   <meta name="author" content="스토쿼트" />
   <meta name="robots" content="index, follow" />
   <meta name="google-site-verification" content="qSrcIF07gRIDvHJ7S9ZCciuzt75-7cBPEpRysYRdgO4" />
@@ -144,7 +144,58 @@
             return content;
           });
         },
-        // 2. 사이드바 collapsible — 활성 섹션만 펼침
+        // 2. 동적 SEO 메타태그 — 포스트별 title, description, og 태그 교체
+        function(hook, vm) {
+          var defaultTitle = '스토쿼트 | KOSPI · KOSDAQ 리서치';
+          var defaultDesc = '코스피·코스닥 주요 종목 분석, 실적 리뷰, 투자 전략을 다루는 한국 주식시장 분석 블로그입니다.';
+          var baseUrl = 'https://totalr.vercel.app';
+
+          function setMeta(name, content) {
+            var el = document.querySelector('meta[property="' + name + '"]') ||
+                     document.querySelector('meta[name="' + name + '"]');
+            if (el) el.setAttribute('content', content);
+          }
+
+          hook.beforeEach(function(content) {
+            // front matter에서 title, summary/description 추출
+            var meta = {};
+            content.replace(/^---\n([\s\S]*?)\n---/, function(match, fm) {
+              fm.split('\n').forEach(function(line) {
+                var idx = line.indexOf(':');
+                if (idx > 0) {
+                  var key = line.substring(0, idx).trim();
+                  var val = line.substring(idx + 1).trim().replace(/^["']|["']$/g, '');
+                  meta[key] = val;
+                }
+              });
+            });
+
+            if (meta.title) {
+              var pageTitle = meta.title + ' | 스토쿼트';
+              var pageDesc = (meta.summary || meta.description || defaultDesc).substring(0, 155);
+              var pageUrl = baseUrl + '/#' + vm.route.path;
+
+              document.title = pageTitle;
+              setMeta('description', pageDesc);
+              setMeta('og:title', pageTitle);
+              setMeta('og:description', pageDesc);
+              setMeta('og:url', pageUrl);
+              setMeta('twitter:title', pageTitle);
+              setMeta('twitter:description', pageDesc);
+            } else {
+              document.title = defaultTitle;
+              setMeta('description', defaultDesc);
+              setMeta('og:title', '스토쿼트 (Stoquote)');
+              setMeta('og:description', defaultDesc);
+              setMeta('og:url', baseUrl + '/');
+              setMeta('twitter:title', '스토쿼트 (Stoquote)');
+              setMeta('twitter:description', defaultDesc);
+            }
+
+            return content;
+          });
+        },
+        // 3. 사이드바 collapsible — 활성 섹션만 펼침
         function(hook, vm) {
           hook.doneEach(function() {
             var nav = document.querySelector('.sidebar-nav');
