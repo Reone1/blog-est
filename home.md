@@ -26,14 +26,6 @@
 ## 최근 분석
 
 <div class="doc-cards">
-  <a class="doc-card" href="#/posts/2026-04-01-std-analysis">
-    <h3>코스피 2,850선 표준편차 시그널 분석 — 과매도 7종목 vs 과매수 위험 5종목</h3>
-    <div class="card-footer">
-      <span>2026.04.01</span>
-      <span class="meta-separator">·</span>
-      <span class="card-tag">표준편차 분석</span>
-    </div>
-  </a>
   <a class="doc-card" href="#/posts/2026-03-31-daily-briefing">
     <h3>코스피 5,052로 4.26% 급락 — 이란전쟁·유가 100달러·터보퀀트 삼중고에 외국인 3.8조 투매</h3>
     <div class="card-footer">
