@@ -16,13 +16,15 @@ Claude Code `/schedule` 명령어로 등록할 스케줄 목록.
 blog-est 레포에서 다음을 순서대로 실행해줘:
 
 1. pip install -e ./tools/content-generator
-2. python -m content_generator.cli generate --type daily_briefing --output posts/
-3. python -m content_generator.cli generate --type std_analysis --output posts/
-4. python scripts/update_sidebar.py
-5. python scripts/update_sitemap.py
-6. python scripts/update_home.py
-7. 변경된 파일을 git add 후 커밋 메시지: "content: daily briefing + std analysis for {오늘 날짜}"
-8. git push origin main
+2. pip install matplotlib pandas
+3. python -m content_generator.cli generate --type daily_briefing --output posts/
+4. python -m content_generator.cli generate --type std_analysis --output posts/
+5. python scripts/generate_charts.py
+6. python scripts/update_sidebar.py
+7. python scripts/update_sitemap.py
+8. python scripts/update_home.py
+9. 변경된 파일을 git add 후 커밋 메시지: "content: daily briefing + std analysis for {오늘 날짜}"
+10. git push origin main
 ```
 
 ---
