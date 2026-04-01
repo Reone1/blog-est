@@ -8,10 +8,11 @@
 ## 오늘의 브리핑
 
 <div class="doc-cards">
-  <a class="doc-card" href="#/posts/2026-03-27-daily-briefing">
-    <h3>삼성전자 59,400원 신저가 속 방산주만 홀로 웃었다 — 외국인 7일 연속 매도에도 기관은 왜 반대매매했나</h3>
+  <a class="doc-card" href="#/posts/2026-03-31-daily-briefing">
+    <h3>코스피 5,052로 4.26% 급락 — 이란전쟁·유가 100달러·터보퀀트 삼중고에 외국인 3.8조 투매</h3>
+    <p class="meta">3월 31일 코스피가 224.84포인트(-4.26%) 폭락한 5,052.46에 마감하며 4거래일 연속 하락했다. 미·이란 전쟁 확전 우려, WTI 100달러 돌파, 구글 터보퀀트 쇼크가 삼중 악재로 작용하며 외국인이 3조8,473억원을 순매도했다.</p>
     <div class="card-footer">
-      <span>2026.03.27</span>
+      <span>2026.03.31</span>
       <span class="meta-separator">·</span>
       <span>데일리 브리핑</span>
     </div>
@@ -31,6 +32,14 @@
       <span>2026.03.27</span>
       <span class="meta-separator">·</span>
       <span class="card-tag">주간 리뷰</span>
+    </div>
+  </a>
+  <a class="doc-card" href="#/posts/2026-03-27-daily-briefing">
+    <h3>삼성전자 59,400원 신저가 속 방산주만 홀로 웃었다 — 외국인 7일 연속 매도에도 기관은 왜 반대매매했나</h3>
+    <div class="card-footer">
+      <span>2026.03.27</span>
+      <span class="meta-separator">·</span>
+      <span class="card-tag">데일리 브리핑</span>
     </div>
   </a>
   <a class="doc-card" href="#/posts/2026-03-26-daily-briefing">
