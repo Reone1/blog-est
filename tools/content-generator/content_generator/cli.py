@@ -112,6 +112,105 @@ def generate(
 
 
 @app.command()
+def regenerate(
+    content_type: str = typer.Option(
+        ...,
+        "--type", "-t",
+        help="콘텐츠 유형 (daily_briefing, std_analysis, sector_analysis, weekly_review, monthly_review)",
+    ),
+    target_date: str = typer.Option(
+        ...,
+        "--date", "-d",
+        help="재생성 대상 날짜 (YYYY-MM-DD 형식)",
+    ),
+    output: Path = typer.Option(
+        Path("posts"),
+        "--output", "-o",
+        help="출력 디렉토리",
+    ),
+    api_key: Optional[str] = typer.Option(
+        None,
+        "--api-key",
+        envvar="ANTHROPIC_API_KEY",
+        help="Anthropic API 키",
+    ),
+    context: Optional[str] = typer.Option(
+        None,
+        "--context", "-c",
+        help="추가 컨텍스트",
+    ),
+):
+    """
+    과거 날짜의 콘텐츠를 실제 시장 데이터 기반으로 재생성
+
+    FinanceDataReader를 사용하여 해당 날짜의 실제 주가 데이터를 수집하고,
+    콘텐츠 유형별 프롬프트 템플릿을 적용하여 재생성합니다.
+
+    Examples:
+        regenerate --type daily_briefing --date 2026-03-30
+        regenerate --type sector_analysis --date 2026-03-31
+    """
+    from datetime import date as date_type
+
+    # 날짜 파싱
+    try:
+        parts = target_date.split("-")
+        parsed_date = date_type(int(parts[0]), int(parts[1]), int(parts[2]))
+    except (ValueError, IndexError):
+        console.print(f"[red]날짜 형식 오류: {target_date} (YYYY-MM-DD 필요)[/red]")
+        raise typer.Exit(1)
+
+    # 콘텐츠 유형 파싱
+    try:
+        ctype = ContentType(content_type)
+    except ValueError:
+        console.print(f"[red]알 수 없는 콘텐츠 유형: {content_type}[/red]")
+        raise typer.Exit(1)
+
+    console.print(Panel(
+        f"[bold blue]콘텐츠 재생성[/bold blue]\n"
+        f"유형: {ctype.value}\n"
+        f"날짜: {parsed_date}\n"
+        f"출력: {output}",
+        title="Regenerate",
+    ))
+
+    try:
+        generator = ContentGenerator(api_key=api_key)
+    except ValueError as e:
+        console.print(f"[red]초기화 실패: {e}[/red]")
+        raise typer.Exit(1)
+
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        console=console,
+    ) as progress:
+        task = progress.add_task(
+            f"과거 시장 데이터 수집 중 ({parsed_date})...", total=None
+        )
+        progress.update(
+            task,
+            description=f"AI 콘텐츠 재생성 중 ({ctype.value}, {parsed_date})...",
+        )
+        post = generator.generate(
+            ctype,
+            additional_context=context,
+            target_date=parsed_date,
+        )
+        progress.update(task, description="완료!")
+
+    console.print(f"\n[bold green]재생성 완료![/bold green]")
+    console.print(f"제목: {post.title}")
+    console.print(f"파일명: {post.filename}")
+
+    output_path = generator.save_post(post, output)
+    console.print(f"[green]저장됨: {output_path}[/green]")
+
+    return post
+
+
+@app.command()
 def list_types():
     """사용 가능한 콘텐츠 유형 목록"""
     console.print("[bold]사용 가능한 콘텐츠 유형:[/bold]\n")

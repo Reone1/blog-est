@@ -7,7 +7,7 @@ stock-researcher 데이터를 기반으로 블로그 콘텐츠 생성
 import os
 import sys
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime
 from enum import Enum
 from pathlib import Path
 from typing import Optional
@@ -65,8 +65,18 @@ class ContentGenerator:
             return prompt_file.read_text(encoding="utf-8")
         raise FileNotFoundError(f"프롬프트 파일을 찾을 수 없습니다: {prompt_file}")
 
-    def _collect_market_data(self, content_type: ContentType) -> dict:
-        """콘텐츠 유형에 맞는 시장 데이터 수집"""
+    def _collect_market_data(
+        self,
+        content_type: ContentType,
+        target_date: Optional[date] = None,
+    ) -> dict:
+        """
+        콘텐츠 유형에 맞는 시장 데이터 수집
+
+        Args:
+            content_type: 콘텐츠 유형
+            target_date: 과거 날짜 지정 시 해당 날짜 데이터 수집 (None이면 오늘)
+        """
         try:
             from stock_researcher import (
                 get_market_summary,
@@ -76,52 +86,95 @@ class ContentGenerator:
                 get_market_breadth,
                 get_volatility_ranking,
                 enrich_stocks_detail,
+                get_historical_market_summary,
+                get_historical_top_movers,
+                get_historical_top_by_market_cap,
             )
         except ImportError:
             # stock-researcher가 설치되지 않은 경우 더미 데이터
             return self._get_dummy_data(content_type)
 
+        # 과거 날짜인 경우 historical 함수 사용
+        is_historical = target_date is not None and target_date < date.today()
+        _get_summary = (
+            lambda m: get_historical_market_summary(m, target_date)
+            if is_historical else get_market_summary(m)
+        )
+        _get_movers = (
+            lambda m, l: get_historical_top_movers(m, target_date, l)
+            if is_historical else get_top_movers(m, l)
+        )
+        _get_top = (
+            lambda m, l: get_historical_top_by_market_cap(m, target_date, l)
+            if is_historical else get_top_by_market_cap(m, l)
+        )
+
+        ref_date = target_date or date.today()
         data = {
-            "date": datetime.now().strftime("%Y년 %m월 %d일"),
-            "timestamp": datetime.now().isoformat(),
+            "date": ref_date.strftime("%Y년 %m월 %d일"),
+            "timestamp": datetime.combine(
+                ref_date, datetime.min.time()
+            ).isoformat(),
         }
 
         try:
             if content_type == ContentType.DAILY_BRIEFING:
-                data["kospi_summary"] = get_market_summary("KOSPI")
-                data["kosdaq_summary"] = get_market_summary("KOSDAQ")
-                data["kospi_movers"] = get_top_movers("KOSPI", limit=5)
-                data["kosdaq_movers"] = get_top_movers("KOSDAQ", limit=5)
-                data["market_breadth"] = get_market_breadth("KOSPI")
-                # 시총 상위 종목 상세 지표 (PER/PBR 등)
-                top_stocks = get_top_by_market_cap("KOSPI", limit=10)
-                data["kospi_top_detail"] = enrich_stocks_detail(top_stocks, limit=10)
+                data["kospi_summary"] = _get_summary("KOSPI")
+                data["kosdaq_summary"] = _get_summary("KOSDAQ")
+                data["kospi_movers"] = _get_movers("KOSPI", 5)
+                data["kosdaq_movers"] = _get_movers("KOSDAQ", 5)
+                if not is_historical:
+                    data["market_breadth"] = get_market_breadth("KOSPI")
+                    top_stocks = get_top_by_market_cap("KOSPI", limit=10)
+                    data["kospi_top_detail"] = enrich_stocks_detail(
+                        top_stocks, limit=10
+                    )
+                else:
+                    data["kospi_top_detail"] = _get_top("KOSPI", 10)
 
             elif content_type == ContentType.STD_ANALYSIS:
-                data["kospi_summary"] = get_market_summary("KOSPI")
-                data["kosdaq_summary"] = get_market_summary("KOSDAQ")
-                data["kospi_signals"] = get_std_signals("KOSPI", limit=10)
-                data["kosdaq_signals"] = get_std_signals("KOSDAQ", limit=10)
-                data["volatility_ranking"] = get_volatility_ranking(
-                    "KOSPI", sort_by="zscore", ascending=True, limit=10
-                )
-                data["market_breadth"] = get_market_breadth("KOSPI")
+                data["kospi_summary"] = _get_summary("KOSPI")
+                data["kosdaq_summary"] = _get_summary("KOSDAQ")
+                if not is_historical:
+                    data["kospi_signals"] = get_std_signals("KOSPI", limit=10)
+                    data["kosdaq_signals"] = get_std_signals(
+                        "KOSDAQ", limit=10
+                    )
+                    data["volatility_ranking"] = get_volatility_ranking(
+                        "KOSPI", sort_by="zscore", ascending=True, limit=10
+                    )
+                    data["market_breadth"] = get_market_breadth("KOSPI")
+                else:
+                    data["kospi_top_detail"] = _get_top("KOSPI", 10)
+                    data["kospi_movers"] = _get_movers("KOSPI", 5)
 
             elif content_type == ContentType.SECTOR_ANALYSIS:
-                data["kospi_summary"] = get_market_summary("KOSPI")
-                data["kospi_top"] = get_top_by_market_cap("KOSPI", limit=20)
-                data["kospi_top_detail"] = enrich_stocks_detail(
-                    data["kospi_top"][:10], limit=10
-                )
-                data["kospi_movers"] = get_top_movers("KOSPI", limit=10)
+                data["kospi_summary"] = _get_summary("KOSPI")
+                data["kospi_movers"] = _get_movers("KOSPI", 10)
+                if not is_historical:
+                    data["kospi_top"] = get_top_by_market_cap(
+                        "KOSPI", limit=20
+                    )
+                    data["kospi_top_detail"] = enrich_stocks_detail(
+                        data["kospi_top"][:10], limit=10
+                    )
+                else:
+                    data["kospi_top_detail"] = _get_top("KOSPI", 20)
 
-            elif content_type in (ContentType.WEEKLY_REVIEW, ContentType.MONTHLY_REVIEW):
-                data["kospi_summary"] = get_market_summary("KOSPI")
-                data["kosdaq_summary"] = get_market_summary("KOSDAQ")
-                data["kospi_movers"] = get_top_movers("KOSPI", limit=10)
-                data["market_breadth"] = get_market_breadth("KOSPI")
-                top_stocks = get_top_by_market_cap("KOSPI", limit=10)
-                data["kospi_top_detail"] = enrich_stocks_detail(top_stocks, limit=10)
+            elif content_type in (
+                ContentType.WEEKLY_REVIEW, ContentType.MONTHLY_REVIEW
+            ):
+                data["kospi_summary"] = _get_summary("KOSPI")
+                data["kosdaq_summary"] = _get_summary("KOSDAQ")
+                data["kospi_movers"] = _get_movers("KOSPI", 10)
+                if not is_historical:
+                    data["market_breadth"] = get_market_breadth("KOSPI")
+                    top_stocks = get_top_by_market_cap("KOSPI", limit=10)
+                    data["kospi_top_detail"] = enrich_stocks_detail(
+                        top_stocks, limit=10
+                    )
+                else:
+                    data["kospi_top_detail"] = _get_top("KOSPI", 10)
 
         except Exception as e:
             data["error"] = str(e)
@@ -307,6 +360,7 @@ class ContentGenerator:
         self,
         content_type: ContentType,
         additional_context: Optional[str] = None,
+        target_date: Optional[date] = None,
     ) -> BlogPost:
         """
         콘텐츠 생성
@@ -314,12 +368,13 @@ class ContentGenerator:
         Args:
             content_type: 콘텐츠 유형
             additional_context: 추가 컨텍스트 (선택)
+            target_date: 과거 날짜 재생성 시 지정 (None이면 오늘)
 
         Returns:
             BlogPost 객체
         """
         # 1. 시장 데이터 수집
-        market_data = self._collect_market_data(content_type)
+        market_data = self._collect_market_data(content_type, target_date)
 
         # 2. 프롬프트 구성
         prompt_template = self._load_prompt(content_type)
@@ -341,9 +396,12 @@ class ContentGenerator:
         content = self.claude.generate(prompt, config)
 
         # 4. 포스트 구성
-        now = datetime.now()
-        title = self._extract_title(content, content_type, now)
-        filename = self._generate_filename(content_type, now)
+        post_date = (
+            datetime.combine(target_date, datetime.min.time())
+            if target_date else datetime.now()
+        )
+        title = self._extract_title(content, content_type, post_date)
+        filename = self._generate_filename(content_type, post_date)
         tags = self._generate_tags(content_type)
         summary = self._extract_summary(content)
 
@@ -351,7 +409,7 @@ class ContentGenerator:
             title=title,
             content=content,
             content_type=content_type,
-            date=now,
+            date=post_date,
             filename=filename,
             tags=tags,
             summary=summary,

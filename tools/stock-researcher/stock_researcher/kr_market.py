@@ -15,6 +15,13 @@ from typing import Optional
 
 import requests
 
+try:
+    import FinanceDataReader as fdr
+    import pandas as pd
+    HAS_FDR = True
+except ImportError:
+    HAS_FDR = False
+
 from .models import Market, MarketSummary, StockInfo, TopMovers
 
 
@@ -493,3 +500,294 @@ def search_stocks(query: str, limit: int = 10) -> list[StockInfo]:
         pass
 
     return results
+
+
+# ──────────────────────────────────────────────────────────
+# 과거 날짜 데이터 수집 (FinanceDataReader 기반)
+# ──────────────────────────────────────────────────────────
+
+# 주요 종목 리스트 (시총 상위 + 주요 테마)
+MAJOR_STOCKS = {
+    # 시가총액 상위
+    "005930": "삼성전자",
+    "000660": "SK하이닉스",
+    "373220": "LG에너지솔루션",
+    "207940": "삼성바이오로직스",
+    "005380": "현대자동차",
+    "006400": "삼성SDI",
+    "068270": "셀트리온",
+    "035420": "NAVER",
+    "000270": "기아",
+    "051910": "LG화학",
+    "055550": "신한지주",
+    "105560": "KB금융",
+    "035720": "카카오",
+    "003670": "포스코퓨처엠",
+    "028260": "삼성물산",
+    "012330": "현대모비스",
+    "066570": "LG전자",
+    "096770": "SK이노베이션",
+    "034730": "SK",
+    "032830": "삼성생명",
+    # 테마/섹터 대표
+    "009150": "삼성전기",
+    "003490": "대한항공",
+    "047050": "포스코인터내셔널",
+    "010130": "고려아연",
+    "018260": "삼성에스디에스",
+    "086790": "하나금융지주",
+    "316140": "우리금융지주",
+    "015760": "한국전력",
+    "017670": "SK텔레콤",
+    "030200": "KT",
+}
+
+
+def get_historical_market_summary(
+    market_type: str = "KOSPI",
+    target_date: date = None,
+) -> MarketSummary:
+    """
+    과거 날짜의 시장 요약 정보 조회 (FinanceDataReader 기반)
+
+    Args:
+        market_type: "KOSPI" 또는 "KOSDAQ"
+        target_date: 조회 날짜 (None이면 오늘)
+    """
+    if target_date is None or target_date >= date.today():
+        return get_market_summary(market_type)
+
+    if not HAS_FDR:
+        raise ImportError("FinanceDataReader가 설치되지 않았습니다.")
+
+    index_code = INDEX_CODE_MAP.get(market_type, "KS11")
+    start = (target_date - timedelta(days=10)).strftime("%Y-%m-%d")
+    end = (target_date + timedelta(days=1)).strftime("%Y-%m-%d")
+
+    df = fdr.DataReader(index_code, start, end)
+    if df.empty:
+        raise ValueError(f"{target_date}의 {market_type} 데이터를 찾을 수 없습니다.")
+
+    # target_date에 가장 가까운 거래일 찾기
+    target_str = target_date.strftime("%Y-%m-%d")
+    if target_str in df.index.strftime("%Y-%m-%d"):
+        row = df.loc[target_str]
+    else:
+        # target_date 이전 가장 가까운 거래일
+        mask = df.index.date <= target_date
+        if not mask.any():
+            raise ValueError(f"{target_date} 근처 거래일을 찾을 수 없습니다.")
+        row = df[mask].iloc[-1]
+
+    index_value = float(row["Close"])
+    index_volume = int(row["Volume"]) if "Volume" in row.index else None
+
+    # 전일 종가로 등락 계산
+    row_idx = df.index.get_loc(row.name)
+    if isinstance(row_idx, slice):
+        row_idx = row_idx.start
+    if row_idx > 0:
+        prev_close = float(df.iloc[row_idx - 1]["Close"])
+        index_change = index_value - prev_close
+        index_change_pct = (index_change / prev_close) * 100
+    else:
+        index_change = 0.0
+        index_change_pct = 0.0
+
+    # 상승/하락 종목 수 추정 (주요 종목 기반)
+    advancing, declining = _count_advancers_decliners(target_date)
+
+    return MarketSummary(
+        market=Market.KR,
+        date=target_date,
+        index_name=market_type,
+        index_value=index_value,
+        index_change=index_change,
+        index_change_percent=index_change_pct,
+        advancing=advancing,
+        declining=declining,
+        unchanged=0,
+        total_volume=index_volume,
+        total_value=None,
+    )
+
+
+def _count_advancers_decliners(target_date: date) -> tuple[int, int]:
+    """주요 종목 기반 상승/하락 종목 수 추정"""
+    if not HAS_FDR:
+        return 0, 0
+
+    advancing = 0
+    declining = 0
+    start = (target_date - timedelta(days=5)).strftime("%Y-%m-%d")
+    end = (target_date + timedelta(days=1)).strftime("%Y-%m-%d")
+
+    for symbol in MAJOR_STOCKS:
+        try:
+            df = fdr.DataReader(symbol, start, end)
+            if df.empty:
+                continue
+            target_str = target_date.strftime("%Y-%m-%d")
+            if target_str in df.index.strftime("%Y-%m-%d"):
+                row_idx = df.index.get_loc(
+                    df.index[df.index.strftime("%Y-%m-%d") == target_str][0]
+                )
+                if isinstance(row_idx, slice):
+                    row_idx = row_idx.start
+                if row_idx > 0:
+                    close = float(df.iloc[row_idx]["Close"])
+                    prev = float(df.iloc[row_idx - 1]["Close"])
+                    if close > prev:
+                        advancing += 1
+                    elif close < prev:
+                        declining += 1
+        except Exception:
+            continue
+
+    return advancing, declining
+
+
+def get_historical_top_movers(
+    market_type: str = "KOSPI",
+    target_date: date = None,
+    limit: int = 5,
+) -> TopMovers:
+    """
+    과거 날짜의 급등/급락/거래량 상위 종목 조회
+
+    Args:
+        market_type: "KOSPI" 또는 "KOSDAQ"
+        target_date: 조회 날짜
+        limit: 각 카테고리별 종목 수
+    """
+    if target_date is None or target_date >= date.today():
+        return get_top_movers(market_type, limit)
+
+    if not HAS_FDR:
+        raise ImportError("FinanceDataReader가 설치되지 않았습니다.")
+
+    start = (target_date - timedelta(days=5)).strftime("%Y-%m-%d")
+    end = (target_date + timedelta(days=1)).strftime("%Y-%m-%d")
+
+    stocks_data = []
+    for symbol, name in MAJOR_STOCKS.items():
+        try:
+            df = fdr.DataReader(symbol, start, end)
+            if df.empty:
+                continue
+            target_str = target_date.strftime("%Y-%m-%d")
+            if target_str not in df.index.strftime("%Y-%m-%d"):
+                continue
+
+            row_idx = df.index.get_loc(
+                df.index[df.index.strftime("%Y-%m-%d") == target_str][0]
+            )
+            if isinstance(row_idx, slice):
+                row_idx = row_idx.start
+            row = df.iloc[row_idx]
+            close = float(row["Close"])
+            volume = int(row["Volume"]) if "Volume" in row.index else 0
+
+            if row_idx > 0:
+                prev_close = float(df.iloc[row_idx - 1]["Close"])
+                change_pct = ((close - prev_close) / prev_close) * 100
+            else:
+                change_pct = 0.0
+
+            stocks_data.append(StockInfo(
+                symbol=symbol,
+                name=name,
+                market=Market.KR,
+                price=close,
+                change_percent=change_pct,
+                volume=volume,
+                fetched_at=target_date,
+            ))
+        except Exception:
+            continue
+
+    # 등락률 기준 정렬
+    gainers = sorted(
+        [s for s in stocks_data if (s.change_percent or 0) > 0],
+        key=lambda x: x.change_percent or 0,
+        reverse=True,
+    )[:limit]
+
+    losers = sorted(
+        [s for s in stocks_data if (s.change_percent or 0) < 0],
+        key=lambda x: x.change_percent or 0,
+    )[:limit]
+
+    most_active = sorted(
+        stocks_data,
+        key=lambda x: x.volume or 0,
+        reverse=True,
+    )[:limit]
+
+    return TopMovers(
+        gainers=gainers,
+        losers=losers,
+        most_active=most_active,
+        market=Market.KR,
+        date=target_date,
+    )
+
+
+def get_historical_top_by_market_cap(
+    market_type: str = "KOSPI",
+    target_date: date = None,
+    limit: int = 10,
+) -> list[StockInfo]:
+    """
+    과거 날짜의 시총 상위 종목 데이터 (주가 기준)
+
+    실제 시가총액은 당일 기준으로 변동하지만, 주요 종목의
+    당일 종가/등락률/거래량을 제공합니다.
+    """
+    if target_date is None or target_date >= date.today():
+        return get_top_by_market_cap(market_type, limit)
+
+    if not HAS_FDR:
+        raise ImportError("FinanceDataReader가 설치되지 않았습니다.")
+
+    start = (target_date - timedelta(days=5)).strftime("%Y-%m-%d")
+    end = (target_date + timedelta(days=1)).strftime("%Y-%m-%d")
+    results = []
+
+    for symbol, name in list(MAJOR_STOCKS.items())[:limit * 2]:
+        try:
+            df = fdr.DataReader(symbol, start, end)
+            if df.empty:
+                continue
+            target_str = target_date.strftime("%Y-%m-%d")
+            if target_str not in df.index.strftime("%Y-%m-%d"):
+                continue
+
+            row_idx = df.index.get_loc(
+                df.index[df.index.strftime("%Y-%m-%d") == target_str][0]
+            )
+            if isinstance(row_idx, slice):
+                row_idx = row_idx.start
+            row = df.iloc[row_idx]
+            close = float(row["Close"])
+            volume = int(row["Volume"]) if "Volume" in row.index else 0
+
+            if row_idx > 0:
+                prev_close = float(df.iloc[row_idx - 1]["Close"])
+                change_pct = ((close - prev_close) / prev_close) * 100
+            else:
+                change_pct = 0.0
+
+            results.append(StockInfo(
+                symbol=symbol,
+                name=name,
+                market=Market.KR,
+                price=close,
+                change_percent=change_pct,
+                volume=volume,
+                fetched_at=target_date,
+            ))
+        except Exception:
+            continue
+
+    return results[:limit]

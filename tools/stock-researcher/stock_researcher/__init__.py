@@ -28,6 +28,9 @@ from .models import (
 from .kr_market import (
     enrich_stock_detail,
     enrich_stocks_detail,
+    get_historical_market_summary,
+    get_historical_top_by_market_cap,
+    get_historical_top_movers,
     get_market_summary,
     get_sector_top,
     get_top_by_market_cap,
@@ -64,6 +67,9 @@ __all__ = [
     "search_stocks",
     "enrich_stock_detail",
     "enrich_stocks_detail",
+    "get_historical_market_summary",
+    "get_historical_top_movers",
+    "get_historical_top_by_market_cap",
     # 변동성 분석
     "calculate_volatility",
     "get_std_signals",
