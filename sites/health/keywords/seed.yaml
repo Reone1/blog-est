@@ -54,7 +54,7 @@ categories:
       - term: "how to start working out when out of shape"
         priority: P0
         type: how-to
-        status: draft
+        status: published
       - term: "benefits of walking 30 minutes a day"
         priority: P0
         type: explainer

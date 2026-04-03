@@ -2,6 +2,7 @@
 
 * **How-To Guides**
   * [How to Improve Flexibility Fast: 7 Science-Backed Strategies That Work](posts/how-to-improve-flexibility-fast.md) <small>04/03</small>
+  * [How to Start Working Out When You're Out of Shape: A Beginner's Guide](posts/how-to-start-working-out-when-out-of-shape.md) <small>04/03</small>
   * [Neck and Shoulder Stretches for Desk Jobs: A Complete Relief Guide for Office Workers](posts/neck-shoulder-stretches-desk-jobs.md) <small>04/03</small>
   * [How to Sleep Better at Night Naturally: A Complete Sleep Hygiene Guide](posts/how-to-sleep-better-naturally.md) <small>03/31</small>
   * [Hip Flexor Stretches for Office Workers: A Complete Guide to Relieving Tight Hips at Your Desk](posts/hip-flexor-stretches-office-workers.md) <small>03/31</small>
