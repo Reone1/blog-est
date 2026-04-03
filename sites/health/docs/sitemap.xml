@@ -7,6 +7,12 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://healthem.vercel.app/#/posts/neck-shoulder-stretches-desk-jobs</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://healthem.vercel.app/#/posts/morning-stretching-routine-beginners</loc>
     <lastmod>2026-03-31</lastmod>
     <changefreq>monthly</changefreq>
@@ -15,6 +21,12 @@
   <url>
     <loc>https://healthem.vercel.app/#/posts/how-to-sleep-better-naturally</loc>
     <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://healthem.vercel.app/#/posts/how-to-improve-flexibility-fast</loc>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
