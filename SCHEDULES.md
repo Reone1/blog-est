@@ -2,6 +2,12 @@
 
 Claude Code Cloud Scheduled Tasks (`claude.ai/code/scheduled`)에 등록할 스케줄 목록.
 
+> **사이트 목록**: Finance (루트), Health (`sites/health/docs/`), Tech (`sites/tech/docs/`)
+
+---
+
+# Part A. Finance 블로그 (루트)
+
 ## 데이터 소스
 
 - **시장 데이터 API**: `https://totalr.vercel.app/api/market`
@@ -189,4 +195,163 @@ blog-est 레포에서 다음을 순서대로 실행해줘:
    - 1일인 경우: "content: monthly review for {지난달}"
    - 15일인 경우: "content: investment strategy briefing for {오늘 날짜}"
 7. git push origin main
+```
+
+---
+---
+
+# Part B. Health 블로그 (`sites/health/docs/`)
+
+사이트 설정: `sites/health/config.yaml`, `sites/health/agent.yaml`
+키워드 시드: `sites/health/keywords/seed.yaml`
+콘텐츠 루트: `sites/health/docs/posts/`
+
+## 포스트 작성 공통 규칙
+
+- 언어: 영어
+- 톤: warm, science-backed, encouraging
+- 독자: 건강에 관심 있는 일반 성인, 직장인, 바쁜 부모
+- 반드시 peer-reviewed 연구 또는 공식 건강 가이드라인(WHO, NIH 등) 인용
+- 의학적 진단/처방 금지, 글 하단에 medical disclaimer 필수
+- 이모지 금지
+- frontmatter 필수: title, date, type, description, keywords
+- JSON-LD `Article` schema 포함 (publisher: "Wellness Lab", url base: `https://healthem.vercel.app`)
+- TL;DR 박스 포함 (`<div class="tldr">`)
+
+---
+
+## 4. Health 일일 포스트 (매일 16:00 UTC / 01:00 KST+1)
+
+이름: `health-daily-content`
+cron: `0 16 * * *` (매일)
+
+```
+blog-est 레포에서 다음을 수행해줘:
+
+1. sites/health/keywords/seed.yaml 에서 status가 "draft"이고 priority가 가장 높은(P0 > P1 > P2) 키워드 하나를 선택해.
+   - 같은 priority 내에서는 카테고리를 순환하며 선택 (같은 카테고리 연속 방지).
+   - 이미 sites/health/docs/posts/ 에 해당 키워드로 작성된 글이 있으면 스킵.
+
+2. sites/health/agent.yaml 의 persona/rules 설정을 참고해서 해당 키워드에 맞는 포스트를 작성해.
+
+파일명: sites/health/docs/posts/{slug}.md (키워드를 kebab-case 슬러그로 변환)
+
+## 포맷 템플릿
+
+---
+title: "{SEO 최적화된 제목}"
+date: "{YYYY-MM-DD}"
+type: "{how-to | explainer | listicle | myth-busting | routine | comparison}"
+description: "{150-160자 메타 설명}"
+keywords: "{메인 키워드, 관련 키워드 3-4개}"
+---
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{제목}",
+  "description": "{description과 동일}",
+  "datePublished": "{YYYY-MM-DD}",
+  "dateModified": "{YYYY-MM-DD}",
+  "author": { "@type": "Organization", "name": "Wellness Lab" },
+  "publisher": { "@type": "Organization", "name": "Wellness Lab" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://healthem.vercel.app/posts/{slug}" }
+}
+</script>
+
+# {제목}
+
+{도입 단락: 문제/관심사 정의, 통계 인용, 2-3문장}
+
+<div class="tldr">
+
+**TL;DR:** {핵심 요약 3-4문장}
+
+</div>
+
+## {본문 섹션들 - type에 따라 구성}
+
+{how-to: 단계별 가이드, 각 단계에 설명과 팁}
+{explainer: 개념 설명, 연구 결과, 실생활 적용}
+{listicle: 번호 매긴 항목들, 각 항목에 근거와 실천 방법}
+{myth-busting: 통념 소개 → 연구 근거 → 실제 결론}
+{routine: 시간대별/순서별 루틴, 난이도 표기}
+
+## Key Takeaways
+
+{3-5개 핵심 포인트 bullet list}
+
+## References
+
+{인용한 연구/가이드라인 출처 목록}
+
+---
+*Disclaimer: This content is for informational purposes only and does not constitute medical advice. Always consult a qualified healthcare professional before starting any new exercise or nutrition program.*
+
+## 작성 규칙
+- 총 1,200-2,000 단어
+- H2/H3로 명확한 섹션 구분
+- 운동/스트레칭 글은 난이도(Beginner/Intermediate/Advanced) 표기
+- 실천 가능한 actionable takeaway 포함
+- 데이터에 없는 건강 주장 금지
+
+3. sites/health/docs/_sidebar.md 에 새 포스트를 적절한 카테고리 아래에 추가해.
+   기존 포맷: `* [제목](posts/{slug}.md) <small>MM/DD</small>`
+
+4. sites/health/docs/sitemap.xml 에 새 URL 추가.
+
+5. sites/health/keywords/seed.yaml 에서 방금 사용한 키워드의 status를 "draft" → "published"로 업데이트.
+
+6. git add 후 커밋 메시지: "content(health): {slug} post"
+7. git push origin main
+```
+
+---
+
+## 5. Health 주간 키워드 확장 (월요일 00:00 UTC / 09:00 KST)
+
+이름: `health-keyword-crawl`
+cron: `0 0 * * 1` (매주 월요일)
+
+```
+blog-est 레포에서 다음을 수행해줘:
+
+1. sites/health/keywords/seed.yaml 의 현재 키워드 목록과 카테고리를 확인해.
+
+2. 각 카테고리에서 기존 키워드를 기반으로 관련 롱테일 키워드를 2-3개씩 제안해.
+   조건:
+   - 기존 키워드와 중복되지 않을 것
+   - 검색 의도가 명확할 것 (informational intent)
+   - type 태그 지정 (how-to, explainer, listicle, myth-busting, routine, comparison)
+   - priority: P2 (신규 키워드는 낮은 우선순위로 시작)
+   - status: draft
+
+3. 제안된 키워드를 seed.yaml의 해당 카테고리 아래에 추가해.
+
+4. git add 후 커밋: "chore(health): expand keyword list"
+5. git push origin main
+```
+
+---
+
+## 6. Health 주간 리포트 (금요일 09:00 UTC / 18:00 KST)
+
+이름: `health-weekly-report`
+cron: `0 9 * * 5` (매주 금요일)
+
+```
+blog-est 레포에서 다음을 수행해줘:
+
+1. sites/health/docs/posts/ 에서 이번 주 작성된 포스트 목록을 확인해.
+
+2. sites/health/keywords/seed.yaml 에서 현재 상태를 파악해:
+   - 총 키워드 수, published 수, draft 수
+   - 카테고리별 진행률
+
+3. 아래 내용을 포함한 주간 리포트를 출력해 (파일 생성 불필요, 터미널 출력만):
+   - 이번 주 발행 포스트 수 및 목록
+   - 키워드 소진율 (published / total)
+   - 다음 주 발행 예정 키워드 (P0 draft 중 상위 5개)
+   - 카테고리별 콘텐츠 밸런스 (편중 여부)
 ```
