@@ -1,0 +1,49 @@
+name: Health Keyword Crawl
+
+on:
+  workflow_dispatch: # 수동 실행
+  schedule:
+    - cron: "0 0 * * 1"  # 매주 월요일 00:00 UTC (09:00 KST)
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            blog-est 레포에서 Health 블로그 키워드를 확장해줘.
+
+            1. sites/health/keywords/seed.yaml 의 현재 키워드 목록과 카테고리를 확인해.
+
+            2. 각 카테고리에서 기존 키워드를 기반으로 관련 롱테일 키워드를 2-3개씩 제안해.
+               조건:
+               - 기존 키워드와 중복되지 않을 것
+               - 검색 의도가 명확할 것 (informational intent)
+               - type 태그 지정 (how-to, explainer, listicle, myth-busting, routine, comparison)
+               - priority: P2 (신규 키워드는 낮은 우선순위로 시작)
+               - status: draft
+
+            3. 제안된 키워드를 seed.yaml의 해당 카테고리 아래에 추가해.
+
+            4. 변경된 내용을 요약해서 출력해줘.
+          show_full_output: true
+
+      - name: Commit & Push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/Reone1/blog-est.git"
+          git config user.name "claude[bot]"
+          git config user.email "claude-bot@anthropic.com"
+          git add sites/health/keywords/
+          git diff --cached --quiet || git commit -m "chore(health): expand keyword list $(date +%Y-%m-%d)"
+          git push

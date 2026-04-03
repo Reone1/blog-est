@@ -1,0 +1,36 @@
+name: Health Weekly Report
+
+on:
+  workflow_dispatch: # 수동 실행
+  schedule:
+    - cron: "0 9 * * 5"  # 매주 금요일 09:00 UTC (18:00 KST)
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            blog-est 레포에서 Health 블로그 주간 리포트를 작성해줘.
+
+            1. sites/health/docs/posts/ 에서 이번 주 작성된 포스트 목록을 확인해.
+               (파일의 frontmatter date 또는 git log로 이번 주 커밋된 파일 확인)
+
+            2. sites/health/keywords/seed.yaml 에서 현재 상태를 파악해:
+               - 총 키워드 수, published 수, draft 수
+               - 카테고리별 진행률
+
+            3. 아래 내용을 포함한 주간 리포트를 출력해 (파일 생성 불필요, 터미널 출력만):
+               - 이번 주 발행 포스트 수 및 목록
+               - 키워드 소진율 (published / total)
+               - 다음 주 발행 예정 키워드 (P0 draft 중 상위 5개)
+               - 카테고리별 콘텐츠 밸런스 (편중 여부)
+               - 추천 액션 (편중 해소, 우선순위 조정 등)
+          show_full_output: true
