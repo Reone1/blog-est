@@ -403,7 +403,7 @@ Reone1/blog-est (GitHub repo)
 │
 ├── (root)               →  Vercel Project: "totalr"        → totalr.vercel.app       (finance)
 ├── sites/tech/docs/     →  Vercel Project: "totalr-tech"   → totalr-tech.vercel.app  (tech)
-└── sites/health/docs/   →  Vercel Project: "totalr-health" → totalr-health.vercel.app (health)
+└── sites/health/docs/   →  Vercel Project: "healthem"      → healthem.vercel.app     (health)
 ```
 
 Vercel에서 동일 레포를 여러 프로젝트로 연결할 때:
@@ -437,7 +437,7 @@ Vercel: 각 프로젝트별 Root Directory 변경 감지
   ↓
 totalr.vercel.app        (finance 변경 시)
 totalr-tech.vercel.app   (tech 변경 시)
-totalr-health.vercel.app (health 변경 시)
+healthem.vercel.app      (health 변경 시)
 ```
 
 Vercel은 같은 레포에 연결된 여러 프로젝트를 자동으로 감지하여

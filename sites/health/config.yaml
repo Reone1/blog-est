@@ -1,6 +1,6 @@
 site:
   name: "wellness-science"
-  domain: "totalr-health.vercel.app"
+  domain: "healthem.vercel.app"
   language: "en"
   description: "Evidence-based wellness, nutrition, sleep, and fitness science"
 
@@ -8,7 +8,7 @@ deploy:
   platform: "vercel"
   framework: "docsify"
   root: "./docs"
-  base_url: "https://totalr-health.vercel.app"
+  base_url: "https://healthem.vercel.app"
 
 publish:
   target: "docsify"
@@ -24,4 +24,4 @@ schedule:
 seo:
   sitemap: true
   robots_txt: true
-  canonical_base: "https://totalr-health.vercel.app"
+  canonical_base: "https://healthem.vercel.app"

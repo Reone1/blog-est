@@ -288,7 +288,7 @@ blog-est 레포에서 다음을 순서대로 실행해줘:
 - 의학적 진단/처방 금지, 글 하단에 medical disclaimer 필수
 - 이모지 금지
 - frontmatter 필수: title, date, type, description, keywords
-- JSON-LD `Article` schema 포함 (publisher: "Wellness Lab", url base: `https://totalr-health.vercel.app`)
+- JSON-LD `Article` schema 포함 (publisher: "Wellness Lab", url base: `https://healthem.vercel.app`)
 - TL;DR 박스 포함 (`<div class="tldr">`)
 
 ---
@@ -329,7 +329,7 @@ keywords: "{메인 키워드, 관련 키워드 3-4개}"
   "dateModified": "{YYYY-MM-DD}",
   "author": { "@type": "Organization", "name": "Wellness Lab" },
   "publisher": { "@type": "Organization", "name": "Wellness Lab" },
-  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://totalr-health.vercel.app/posts/{slug}" }
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://healthem.vercel.app/posts/{slug}" }
 }
 </script>
 
