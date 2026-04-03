@@ -1,0 +1,42 @@
+name: Health Daily Content
+
+on:
+  workflow_dispatch: # 수동 실행 (테스트용)
+  # schedule:
+  #   - cron: "0 16 * * *"  # 매일 16:00 UTC (01:00 KST+1)
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            이 레포의 Health 블로그에 새 포스트를 작성해줘.
+
+            1. sites/health/keywords/seed.yaml 에서 status가 "draft"이고 priority가 가장 높은(P0 > P1 > P2) 키워드 하나를 선택해.
+               - 이미 sites/health/docs/posts/ 에 해당 키워드로 작성된 글이 있으면 스킵.
+
+            2. sites/health/agent.yaml 의 persona/rules 설정을 참고해서 해당 키워드에 맞는 포스트를 작성해.
+               - 파일명: sites/health/docs/posts/{slug}.md
+
+            3. sites/health/keywords/seed.yaml 에서 사용한 키워드의 status를 "published"로 변경해.
+
+            4. python3 scripts/update_health_sidebar.py && python3 scripts/update_health_sitemap.py
+
+            5. 변경된 파일 목록을 출력해줘.
+          allowed_tools: "Bash,Read,Write,Edit,Glob,Grep,WebFetch,WebSearch"
+          direct_prompt: true
+
+      - name: Commit & Push
+        run: |
+          git config user.name "claude[bot]"
+          git config user.email "claude-bot@anthropic.com"
+          git add sites/health/ scripts/
+          git diff --cached --quiet || git commit -m "content(health): daily post $(date +%Y-%m-%d)"
+          git push
