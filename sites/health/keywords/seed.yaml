@@ -21,15 +21,15 @@ categories:
       - term: "best stretches for lower back pain"
         priority: P0
         type: how-to
-        status: draft
+        status: published
       - term: "morning stretching routine for beginners"
         priority: P0
         type: routine
-        status: draft
+        status: published
       - term: "hip flexor stretches for office workers"
         priority: P0
         type: how-to
-        status: draft
+        status: published
       - term: "how to improve flexibility fast"
         priority: P0
         type: how-to
@@ -50,7 +50,7 @@ categories:
       - term: "best exercises for beginners at home"
         priority: P0
         type: listicle
-        status: draft
+        status: published
       - term: "how to start working out when out of shape"
         priority: P0
         type: how-to
@@ -58,7 +58,7 @@ categories:
       - term: "benefits of walking 30 minutes a day"
         priority: P0
         type: explainer
-        status: draft
+        status: published
       - term: "bodyweight exercises for full body workout"
         priority: P0
         type: listicle
@@ -82,15 +82,15 @@ categories:
       - term: "healthiest foods to eat every day"
         priority: P0
         type: listicle
-        status: draft
+        status: published
       - term: "how much protein do you need per day"
         priority: P0
         type: explainer
-        status: draft
+        status: published
       - term: "best foods for gut health"
         priority: P0
         type: listicle
-        status: draft
+        status: published
       - term: "meal prep ideas for beginners healthy"
         priority: P0
         type: how-to
@@ -139,7 +139,7 @@ categories:
       - term: "how to sleep better at night naturally"
         priority: P0
         type: how-to
-        status: draft
+        status: published
       - term: "screen time before bed effects on sleep"
         priority: P0
         type: explainer
@@ -206,7 +206,7 @@ categories:
       - term: "do you really need 10000 steps a day"
         priority: P0
         type: myth-busting
-        status: draft
+        status: published
       - term: "is breakfast really the most important meal"
         priority: P1
         type: myth-busting
