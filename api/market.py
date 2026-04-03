@@ -5,7 +5,7 @@ Claude Code 스케줄 태스크에서 사용하는 시장 데이터 API.
 네이버 Finance 모바일 API를 프록시하여 KOSPI/KOSDAQ 데이터를 제공합니다.
 
 엔드포인트:
-  GET /api/market              — 전체 시장 데이터 (기본, 수급+업종 포함)
+  GET /api/market              — 전체 시장 데이터 (기본, 수급+업종+뉴스 포함)
   GET /api/market?type=detail  — 시총 상위 20종목 개별 상세 포함
 """
 
@@ -76,6 +76,22 @@ def _collect_industry() -> list | None:
     return None
 
 
+def _collect_news(count: int = 10) -> list | None:
+    """시장 주요 뉴스 헤드라인 (제목 + 요약 + 언론사 + 시간)"""
+    data = _naver_get(f"/news/list?type=market&page=1&pageSize={count}")
+    if not data or not isinstance(data, list):
+        return None
+    return [
+        {
+            "title": item.get("tit"),
+            "summary": item.get("subcontent"),
+            "source": item.get("ohnm"),
+            "datetime": item.get("dt"),
+        }
+        for item in data
+    ]
+
+
 def _enrich_with_details(data: dict) -> dict:
     """시총 상위 종목에 개별 상세 데이터 + 섹터 태깅 추가"""
     for market in ["KOSPI", "KOSDAQ"]:
@@ -121,6 +137,11 @@ class handler(BaseHTTPRequestHandler):
             industry = _collect_industry()
             if industry:
                 data["industry"] = industry
+
+            # 시장 주요 뉴스 헤드라인
+            news = _collect_news(10)
+            if news:
+                data["news"] = news
 
             # detail 모드: 시총 상위 종목 개별 상세 추가
             if data_type == "detail":
