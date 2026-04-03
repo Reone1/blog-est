@@ -52,7 +52,7 @@ type: daily_briefing
   "dateModified": "{YYYY-MM-DD}",
   "author": { "@type": "Organization", "name": "스토쿼트" },
   "publisher": { "@type": "Organization", "name": "스토쿼트", "logo": { "@type": "ImageObject", "url": "https://totalr.vercel.app/assets/logo.svg" } },
-  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://totalr.vercel.app/#/posts/{YYYY-MM-DD}-daily-briefing" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://totalr.vercel.app/posts/{YYYY-MM-DD}-daily-briefing" },
   "image": "https://totalr.vercel.app/assets/og-image.svg"
 }
 </script>
@@ -144,7 +144,7 @@ type: weekly_review
   "dateModified": "{YYYY-MM-DD}",
   "author": { "@type": "Organization", "name": "스토쿼트" },
   "publisher": { "@type": "Organization", "name": "스토쿼트", "logo": { "@type": "ImageObject", "url": "https://totalr.vercel.app/assets/logo.svg" } },
-  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://totalr.vercel.app/#/posts/{YYYY-MM-DD}-weekly-review" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://totalr.vercel.app/posts/{YYYY-MM-DD}-weekly-review" },
   "image": "https://totalr.vercel.app/assets/og-image.svg"
 }
 </script>

@@ -16,7 +16,7 @@ type: daily_briefing
   "dateModified": "2026-04-01",
   "author": { "@type": "Organization", "name": "스토쿼트" },
   "publisher": { "@type": "Organization", "name": "스토쿼트", "logo": { "@type": "ImageObject", "url": "https://totalr.vercel.app/assets/logo.svg" } },
-  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://totalr.vercel.app/#/posts/2026-04-01-daily-briefing" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://totalr.vercel.app/posts/2026-04-01-daily-briefing" },
   "image": "https://totalr.vercel.app/assets/og-image.svg"
 }
 </script>

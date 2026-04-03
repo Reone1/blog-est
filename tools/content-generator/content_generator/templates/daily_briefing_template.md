@@ -28,7 +28,7 @@ type: daily_briefing
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://totalr.vercel.app/#/posts/{YYYY-MM-DD}-daily-briefing"
+    "@id": "https://totalr.vercel.app/posts/{YYYY-MM-DD}-daily-briefing"
   },
   "image": "https://totalr.vercel.app/assets/og-image.svg"
 }

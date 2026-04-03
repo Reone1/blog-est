@@ -63,7 +63,7 @@
           "@type": "ListItem",
           "position": 2,
           "name": "시장 인사이트",
-          "item": "https://totalr.vercel.app/#/home"
+          "item": "https://totalr.vercel.app/home"
         }
       ]
     }
@@ -83,6 +83,7 @@
       auto2top: true,
       search: 'auto',
       relativePath: false,
+      routerMode: 'history',
       themeColor: '#b4a078',
       alias: {
         '/.*/_sidebar.md': '/_sidebar.md'
@@ -173,7 +174,7 @@
             if (meta.title) {
               var pageTitle = meta.title + ' | 스토쿼트';
               var pageDesc = (meta.summary || meta.description || defaultDesc).substring(0, 155);
-              var pageUrl = baseUrl + '/#' + vm.route.path;
+              var pageUrl = baseUrl + vm.route.path;
 
               document.title = pageTitle;
               setMeta('description', pageDesc);

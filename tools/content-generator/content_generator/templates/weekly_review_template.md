@@ -28,7 +28,7 @@ type: weekly_review
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://totalr.vercel.app/#/posts/{YYYY-MM-DD}-weekly-review"
+    "@id": "https://totalr.vercel.app/posts/{YYYY-MM-DD}-weekly-review"
   },
   "image": "https://totalr.vercel.app/assets/og-image.svg"
 }

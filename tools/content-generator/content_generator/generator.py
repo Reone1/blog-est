@@ -330,7 +330,7 @@ class ContentGenerator:
 
         # 파일명에서 slug 추출 (.md 제거)
         slug = post.filename.replace(".md", "")
-        post_url = f"https://totalr.vercel.app/#/posts/{slug}"
+        post_url = f"https://totalr.vercel.app/posts/{slug}"
         date_str = post.date.strftime("%Y-%m-%d")
 
         # 프론트매터 + JSON-LD Schema 추가

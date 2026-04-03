@@ -87,7 +87,7 @@ def build_card(post: dict, include_summary: bool = False) -> str:
     type_label = TYPE_LABELS.get(post["type"], post["type"])
 
     lines = []
-    lines.append(f'  <a class="doc-card" href="#/posts/{post["filename"]}">')
+    lines.append(f'  <a class="doc-card" href="/posts/{post["filename"]}">')
     lines.append(f'    <h3>{post["title"]}</h3>')
     if include_summary and post["summary"]:
         lines.append(f'    <p class="meta">{post["summary"]}</p>')

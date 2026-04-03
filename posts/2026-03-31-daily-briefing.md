@@ -28,7 +28,7 @@ type: daily_briefing
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://totalr.vercel.app/#/posts/2026-03-31-daily-briefing"
+    "@id": "https://totalr.vercel.app/posts/2026-03-31-daily-briefing"
   },
   "image": "https://totalr.vercel.app/assets/og-image.svg"
 }
