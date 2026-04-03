@@ -8,6 +8,10 @@
 * [KOSPI 8.44% 폭등, 방위산업株 전방위 상한가 — LIG넥스원 29.95%·삼성전자 13.40% 급등](posts/2026-04-01-daily-briefing.md) <small>04/01</small>
 * [코스피 5,052로 4.26% 급락 — 이란전쟁·유가 100달러·터보퀀트 삼중고에 외국인 3.8조 투매](posts/2026-03-31-daily-briefing.md) <small>03/31</small>
 
+## 주간 분석
+
+* [KOSPI 5,377로 주간 +1.9% 마감 — 이란 전쟁·유가 100달러 충격 속 방산주 폭등과 극단적 변동성의 한 주](posts/2026-04-03-weekly-review.md) <small>04/03</small>
+
 ## 섹터 분석
 
 * [조선 심층 분석 — 업종 +6.63%, HD현대중공업·한화오션 동반 급등, 전 종목 상승](posts/2026-04-03-sector-shipbuilding.md) <small>04/03</small>

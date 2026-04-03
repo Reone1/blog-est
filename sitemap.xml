@@ -25,6 +25,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://totalr.vercel.app/posts/2026-04-03-weekly-review</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://totalr.vercel.app/posts/2026-04-03-sector-shipbuilding</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>weekly</changefreq>

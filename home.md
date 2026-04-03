@@ -34,6 +34,14 @@
       <span class="card-tag">섹터 분석</span>
     </div>
   </a>
+  <a class="doc-card" href="/posts/2026-04-03-weekly-review">
+    <h3>KOSPI 5,377로 주간 +1.9% 마감 — 이란 전쟁·유가 100달러 충격 속 방산주 폭등과 극단적 변동성의 한 주</h3>
+    <div class="card-footer">
+      <span>2026.04.03</span>
+      <span class="meta-separator">·</span>
+      <span class="card-tag">주간 리뷰</span>
+    </div>
+  </a>
   <a class="doc-card" href="/posts/2026-04-03-sector-energy-equipment">
     <h3>에너지장비및서비스 심층 분석 — 업종 +12.35%, 호르무즈 기대감에 HD현대에너지솔루션 상한가</h3>
     <div class="card-footer">
@@ -46,14 +54,6 @@
     <h3>KOSPI -4.47% 급락 — 대우건설 -15% 충격, 원유 레버리지 ETN만 강세</h3>
     <div class="card-footer">
       <span>2026.04.02</span>
-      <span class="meta-separator">·</span>
-      <span class="card-tag">데일리 브리핑</span>
-    </div>
-  </a>
-  <a class="doc-card" href="/posts/2026-04-01-daily-briefing">
-    <h3>KOSPI 8.44% 폭등, 방위산업株 전방위 상한가 — LIG넥스원 29.95%·삼성전자 13.40% 급등</h3>
-    <div class="card-footer">
-      <span>2026.04.01</span>
       <span class="meta-separator">·</span>
       <span class="card-tag">데일리 브리핑</span>
     </div>
