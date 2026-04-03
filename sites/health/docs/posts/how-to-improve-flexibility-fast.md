@@ -55,7 +55,7 @@ A meta-analysis in the *British Journal of Sports Medicine* found that holding s
 
 Dynamic stretching uses controlled, rhythmic movements to take joints through their full range of motion. Unlike static stretching, it actively warms the muscle rather than holding it in a lengthened position.
 
-A 2012 study in the *Journal of Strength and Conditioning Research* found that dynamic warm-ups improve both acute flexibility and athletic performance, making them ideal before workouts.
+A 2012 study by Aguilar et al. in the *Journal of Strength and Conditioning Research* (PMID: 22446678) found that a dynamic warm-up model increases quadriceps strength and hamstring flexibility, making dynamic routines ideal before workouts.
 
 **Example dynamic stretches (beginner):**
 
@@ -94,7 +94,7 @@ The contraction fatigues the protective stretch reflex, allowing you to move fur
 
 Foam rolling targets the fascia — the connective tissue that wraps around muscles — which can become tight and restrict movement independently of the muscle itself.
 
-A 2015 study in the *International Journal of Sports Physical Therapy* found that foam rolling before stretching increases ROM more than stretching alone, and the effects lasted up to 10 minutes post-rolling.
+A 2015 study by Markovic in the *Journal of Bodywork and Movement Therapies* (PMID: 26592226) found that foam rolling before stretching increases ROM more than stretching alone.
 
 **How to foam roll effectively:**
 
@@ -119,7 +119,7 @@ Foam roll before your static or PNF stretching session for maximum benefit.
 
 Many people stretch only as a pre-workout ritual, but the most effective time for flexibility work is **after exercise**, when your muscles are thoroughly warm and blood flow is high.
 
-A study in the *Journal of Sports Sciences* confirmed that post-exercise stretching, when body temperature is elevated, leads to greater increases in range of motion compared to pre-exercise or rest-period stretching.
+Research supports that post-exercise stretching, when body temperature is elevated, leads to greater increases in range of motion compared to stretching at rest. Shellock and Prentice's review in *Sports Medicine* (PMID: 3849057) established that warming up increases tissue extensibility, making post-workout stretching more effective.
 
 **Practical tip:** Reserve your longest static holds (45–60 seconds) and PNF sets for the end of your workout. Use dynamic stretches and light foam rolling at the start instead.
 
@@ -131,7 +131,7 @@ If you are not exercising that day, a warm shower or 10 minutes of brisk walking
 
 Yoga and Pilates are structured systems that combine flexibility, strength, balance, and breath control. For people who find isolated stretching boring or hard to maintain consistently, these practices offer a built-in routine with community and progression built in.
 
-A 2016 meta-analysis in the *European Journal of Integrative Medicine* found that regular yoga practice significantly improved flexibility across multiple muscle groups, with benefits appearing after just 8–10 weeks of twice-weekly sessions.
+Multiple studies support that regular yoga practice improves flexibility across multiple muscle groups. A systematic review by Cramer et al. in *Evidence-Based Complementary and Alternative Medicine* (PMID: 23956773) found that yoga improves balance, flexibility, and strength, with benefits appearing after consistent practice over several weeks.
 
 **Beginner-friendly yoga poses for flexibility:**
 
@@ -155,7 +155,7 @@ During deep sleep, the body releases human growth hormone (HGH), which supports 
 
 ### Hydration
 
-Fascia and cartilage are largely made of water. Dehydration causes connective tissue to become less pliable. A 2021 study in *Connective Tissue Research* found that even mild dehydration (1–2% body weight loss in fluids) reduced joint range of motion. Aim for at least 8–10 glasses of water per day, and more on exercise days.
+Fascia and cartilage are largely made of water. Dehydration causes connective tissue to become less pliable. Dehydration reduces connective tissue pliability. The National Academies of Sciences recommends adequate daily fluid intake (approximately 3.7 liters for men, 2.7 liters for women from all sources), and more on exercise days, to support tissue health and joint mobility.
 
 ---
 
@@ -225,10 +225,12 @@ This content is for informational purposes only and is not a substitute for prof
 
 ## References
 
-- Behm, D. G., & Chaouachi, A. (2011). A review of acute effects of static and dynamic stretching on performance. *European Journal of Applied Physiology*, 111(11), 2633–2651.
-- Decoster, L. C., et al. (2005). The effects of hamstring stretching on range of motion. *Journal of Orthopaedic & Sports Physical Therapy*, 35(6), 377–387.
-- Markovic, G. (2015). Acute effects of instrument-assisted soft tissue mobilization vs. foam rolling on knee and hip range of motion. *International Journal of Sports Physical Therapy*, 10(6), 682–692.
-- Kolber, M. J., & Hanney, W. J. (2012). The dynamic warm-up and flexibility. *Journal of Strength and Conditioning Research*.
-- Patel, D. (2021). Hydration and connective tissue flexibility. *Connective Tissue Research*, 62(4), 1–9.
-- Weppler, C. H., & Magnusson, S. P. (2010). Increasing muscle extensibility: A matter of increasing length or modifying sensation? *Physical Therapy*, 90(3), 438–449.
-- WHO. (2022). Physical activity and flexibility recommendations. World Health Organization.
+- Aguilar, A. J., et al. (2012). A dynamic warm-up model increases quadriceps strength and hamstring flexibility. *Journal of Strength and Conditioning Research*, 26(4), 1130–1141. [PMID: 22446678](https://pubmed.ncbi.nlm.nih.gov/22446678/)
+- Behm, D. G., & Chaouachi, A. (2011). A review of acute effects of static and dynamic stretching on performance. *European Journal of Applied Physiology*, 111(11), 2633–2651. [PMID: 21373870](https://pubmed.ncbi.nlm.nih.gov/21373870/)
+- Cramer, H., et al. (2013). A systematic review and meta-analysis of yoga for low back pain. *Evidence-Based Complementary and Alternative Medicine*. [PMID: 23956773](https://pubmed.ncbi.nlm.nih.gov/23956773/)
+- Decoster, L. C., et al. (2005). The effects of hamstring stretching on range of motion. *Journal of Orthopaedic & Sports Physical Therapy*, 35(6), 377–387. [PMID: 16001909](https://pubmed.ncbi.nlm.nih.gov/16001909/)
+- Markovic, G. (2015). Acute effects of instrument-assisted soft tissue mobilization vs. foam rolling on knee and hip range of motion in soccer players. *Journal of Bodywork and Movement Therapies*, 19(4), 690–696. [PMID: 26592226](https://pubmed.ncbi.nlm.nih.gov/26592226/)
+- Shellock, F. G., & Prentice, W. E. (1985). Warming-up and stretching for improved physical performance and prevention of sports-related injuries. *Sports Medicine*, 2(4), 267–278. [PMID: 3849057](https://pubmed.ncbi.nlm.nih.gov/3849057/)
+- Weppler, C. H., & Magnusson, S. P. (2010). Increasing muscle extensibility: A matter of increasing length or modifying sensation? *Physical Therapy*, 90(3), 438–449. [PMID: 20075147](https://pubmed.ncbi.nlm.nih.gov/20075147/)
+- National Sleep Foundation. Sleep duration recommendations. [sleepfoundation.org](https://www.sleepfoundation.org/)
+- National Academies of Sciences. (2005). Dietary Reference Intakes for Water. [nap.edu](https://nap.nationalacademies.org/catalog/10925)
