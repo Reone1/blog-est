@@ -35,6 +35,7 @@ jobs:
             5. 변경된 파일 목록을 출력해줘.
           allowed_tools: "Bash,Read,Write,Edit,Glob,Grep,WebFetch,WebSearch"
           direct_prompt: true
+          show_full_output: true
 
       - name: Commit & Push
         env:
