@@ -32,7 +32,7 @@ image: "https://totalr.vercel.app/assets/og-image.png"
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://totalr.vercel.app/#/posts/two-arrows-2026"
+    "@id": "https://totalr.vercel.app/posts/two-arrows-2026"
   },
   "keywords": ["ETF", "동학개미", "조선기자재", "2026전망", "주도주", "한국주식"]
 }

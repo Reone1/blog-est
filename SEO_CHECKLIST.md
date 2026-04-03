@@ -51,7 +51,7 @@ Front Matter 바로 아래에 JSON-LD 구조화 데이터를 추가합니다:
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://totalr.vercel.app/#/posts/파일명"
+    "@id": "https://totalr.vercel.app/posts/파일명"
   },
   "keywords": ["키워드1", "키워드2", "키워드3"]
 }
@@ -64,7 +64,7 @@ Front Matter 바로 아래에 JSON-LD 구조화 데이터를 추가합니다:
 
 ```xml
 <url>
-  <loc>https://totalr.vercel.app/#/posts/새-포스트-파일명</loc>
+  <loc>https://totalr.vercel.app/posts/새-포스트-파일명</loc>
   <lastmod>YYYY-MM-DD</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.8</priority>
@@ -174,7 +174,7 @@ image: "https://totalr.vercel.app/assets/og-image.png"
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://totalr.vercel.app/#/posts/파일명"
+    "@id": "https://totalr.vercel.app/posts/파일명"
   },
   "keywords": []
 }

@@ -76,8 +76,8 @@ def generate_sitemap(project_root: Path) -> str:
     # 고정 페이지
     static_pages = [
         {"loc": f"{BASE_URL}/", "priority": "1.0", "changefreq": "daily", "lastmod": today},
-        {"loc": f"{BASE_URL}/#/home", "priority": "0.9", "changefreq": "daily", "lastmod": today},
-        {"loc": f"{BASE_URL}/#/about", "priority": "0.7", "changefreq": "monthly"},
+        {"loc": f"{BASE_URL}/home", "priority": "0.9", "changefreq": "daily", "lastmod": today},
+        {"loc": f"{BASE_URL}/about", "priority": "0.7", "changefreq": "monthly"},
     ]
 
     for page in static_pages:
@@ -102,7 +102,7 @@ def generate_sitemap(project_root: Path) -> str:
             slug = md_file.stem
 
             url = SubElement(urlset, "url")
-            SubElement(url, "loc").text = f"{BASE_URL}/#/posts/{slug}"
+            SubElement(url, "loc").text = f"{BASE_URL}/posts/{slug}"
             SubElement(url, "lastmod").text = post_date
             SubElement(url, "changefreq").text = changefreq
             SubElement(url, "priority").text = "0.8"
