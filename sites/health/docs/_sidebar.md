@@ -16,6 +16,7 @@
   * [How Much Protein Do You Need Per Day? A Complete, Evidence-Based Guide](posts/how-much-protein-per-day.md) <small>03/31</small>
 
 * **Lists**
+  * [Bodyweight Exercises for a Full Body Workout: The Complete Guide](posts/bodyweight-exercises-full-body-workout.md) <small>04/04</small>
   * [10 Best Exercises for Beginners at Home (No Equipment Needed)](posts/best-exercises-beginners-at-home.md) <small>03/31</small>
   * [The Healthiest Foods to Eat Every Day: 15 Nutrient-Dense Picks Backed by Science](posts/healthiest-foods-to-eat-every-day.md) <small>03/31</small>
   * [The 12 Best Foods for Gut Health: A Beginner's Guide to Feeding Your Microbiome](posts/best-foods-for-gut-health.md) <small>03/31</small>
