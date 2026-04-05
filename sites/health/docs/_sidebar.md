@@ -12,6 +12,7 @@
   * [Morning Stretching Routine for Beginners: A 10-Minute Daily Practice](posts/morning-stretching-routine-beginners.md) <small>03/31</small>
 
 * **Explainers**
+  * [How Many Times a Week Should You Exercise? What the Science Says](posts/how-many-times-a-week-should-you-exercise.md) <small>04/05</small>
   * [The Benefits of Walking 30 Minutes a Day: What the Science Actually Says](posts/benefits-of-walking-30-minutes.md) <small>03/31</small>
   * [How Much Protein Do You Need Per Day? A Complete, Evidence-Based Guide](posts/how-much-protein-per-day.md) <small>03/31</small>
 
